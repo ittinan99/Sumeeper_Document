@@ -1,0 +1,21 @@
+Weapon,Rarity,HP,ATK,DEF,SPD,Effect,Trigger,Keyword,Magnitude,TargetStat,Effect Sign,Action Gauge,Sum,Effect Value,Combat Power,Should Be CP,Set
+Frying pan,Common,2,0,0,0,On-Half: Gain 1 ATK,On-Half,Gain,1,ATK,Positive,0,2,2.3,4.3,4,Humble
+Broken Plate,Common,0,1,0,0,On-Exposed: Gain 1 ATK,On-Exposed,Gain,1,ATK,Positive,0,2,2.3,4.3,4,Humble
+Mysterious Pot,Common,0,0,2,0,-,Passive,Gain,1,None,None,1,2,0.0,4.0,4,Tempest
+Mortar and Pestle,Common,0,0,0,1,On-Half: Restore 3 HP,On-Half,Restore,3,HP,Positive,0,2,2.3,4.3,4,Bravery
+Spirit Fork,Rare,0,4,0,0,On-Hit: Gain -1 ATK,On-Hit,Gain,-1,ATK,Negative,0,8,0.6,8.6,8,Heavy
+Chopping Board,Rare,3,0,2,0,On-Hit: Gain 1 DEF,On-Hit,Gain,1,DEF,Positive,0,5,3.0,8.0,8,Humble
+Windmill Spatula,Rare,-3,1,0,0,On-Start: 1 Thorn,On-Start,Thorn,1,Thorn,Positive,0,-1,9.0,8.0,8,Ancient
+Cloud Cutting Spoon,Rare,-2,0,0,4,On-Half: Gain 1 SPD per HP lost,On-Half,Gain,1,SPD,Positive,0,6,2.3,8.3,8,Tempest
+Immortal Ladle,Epic,2,2,2,2,-,Passive,Gain,1,None,None,0,12,0.0,12.0,12,Bravery
+Darkness Apron,Epic,4,3,0,-2,On-Exposed: Thorn 1,On-Exposed,Thorn,1,Thorn,Positive,0,6,6.8,12.8,12,Heavy
+Infinity Gloves,Epic,0,3,0,1,-,Passive,Gain,1,None,None,2,8,0.0,12.0,12,Tempest
+Bottomless Chef's Hat,Epic,2,0,0,2,On-Hit: Convert 1 SPD to 1 ATK,On-Hit,Convert,1,ATK,None,0,6,0.0,6.0,12,Heavy
+Miracle Knife,Legend,0,2,0,2,On-Half: 1 Armor,On-Half,Armor,1,Armor,Positive,1,8,5.6,15.6,16,Ancient
+Surya Dough Kneader,Legend,2,3,0,2,On-Hit: Restore 2 HP,On-Hit,Restore,2,HP,Positive,0,12,4.5,16.5,16,Bravery
+The Great Microwave,Legend,4,0,10,0,-,Passive,Gain,1,None,None,1,14,0.0,16.0,16,Ancient
+Golden pan,Legend,0,0,0,-1,On-Start: Gain 1 DEF equal MAX HP,On-Start,Gain,Scaling,MAX HP,Positive,0,-2,18.0,16.0,16,Bravery
+Emperor Knife,Mythic,0,4,0,3,On-Damaged: Convert 1 DEF to 1 ATK,On-Damaged,Convert,1,ATK,None,1,14,0.0,16.0,20,Ancient
+Gaint Fork,Mythic,4,4,4,0,On-Action: Convert 1 HP to SPD,On-Action,Convert,1,SPD,Positive,0,16,3.8,19.8,20,Tempest
+Maid Apron,Mythic,2,2,2,0,On-Action: 1 Armor,On-Action,Armor,1,Armor,Positive,1,8,9.4,19.4,20,Humble
+Dragon Bone Ladle,Mythic,3,3,3,3,-,Passive,Gain,1,None,None,1,18,0.0,20.0,20,Heavy

@@ -1,0 +1,124 @@
+Primary Perk (การ์ดสายหลัก),Secondary Perk,,Normal
+"Protector
+
+เมื่อ Action gauge เต็มจะไม่รีเซ็ตแบบปกติ
+แต่จะรีเซ็ตเมื่อผู้เล่นโดนโจมตีแทน
+เมื่อรีเซ็ตจะโจมตีโต้กลับ = ATK + ATK ของศัตรู + จำนวนช่อง Action gauge
+
+On-Damaged: Reset Action gauge.
+On-Action: Counter — deal (Player ATK + Enemy ATK + Action gauge slots) damage.","Full-Counter
+การโจมตีโต้กลับทำความเสียหายเพิ่มขึ้น 50/100/150%
+
+Counter damage increased by 50/100/150%.",,"Open Pantry
+On-Exposed สามารถ trigger ได้เพิ่มขึ้น 1/2/3 ครั้ง
+
+On-Exposed can trigger 1/2/3 additional times."
+,"Guarding
+ในขณะที่ Action-Gauge เต็มจะได้รับ Armor 1/2/3 ชั่วคราว
+
+while action gauge is full gain temporary armor 1/2/3",,
+,,,
+"Berserker
+
+On-Action: Restore HP เท่ากับจำนวน Action gauge slot ที่ลดลงไปใน combat นี้ + 1
+ทุกครั้งที่ On-Half ทำงาน Action gauge max slots ลดลง 1 (ต่ำสุด 2)
+
+
+On-Action: Restore HP equal to Action gauge slots decreased in this combat +1.
+Every On-Half: Action gauge slots − 1 (min 2).","Pure Heat
+ทุกครั้งที่ Action gauge ลดลง ATK จะเพิ่มขึ้น 1/2/3 คูณด้วยจำนวนครั้งที่ On-Half ทำงานใน combat นี้
+ATK ที่ได้คงอยู่ตลอด combat นี้
+
+Every Action gauge decrease: gain ATK equal to (1/2/3 × On-Half that triggers in this combat).
+Lasts until combat ends.",,"Half-Cooked Spirit
+On-Half สามารถ trigger ได้เพิ่มขึ้น 1/2/3 ครั้ง
+
+On-Half can trigger 1/2/3 additional times."
+,,,"Adrenaline Sear
+SPD จะเพิ่มขึ้น 1 ต่อ 20/15/10% ของ HP ที่หายไป
+
+Gain +1 SPD per 20/15/10% HP lost."
+,,,
+"Duelist
+Replaces On-Action
+
+แทนที่การโจมตี burst ปกติ
+On-Action จะทำการโจมตีเสริมจำนวนครั้งเท่ากับช่อง Action gauge
+การโจมตีเสริมแต่ละครั้งทำความเสียหาย = 50% ของ ATK
+
+Replaces normal On-Action behavior.
+On-Action: bonus attacks equal to Action gauge slots, each dealing 50% ATK.","Combo Strike
+การโจมตีเสริมแต่ละครั้งนับเป็น On-Hit
+
+Each bonus attack counts as On-Hit.",,
+,"Full Force
+การโจมตีเสริมทำความเสียหายเพิ่มขึ้นเป็น 60/70/70% ของ ATK
+
+Bonus attacks deal damage 60/70/80% equal of ATK",,
+,,,
+"Alchemist
+Replaces On-Action
+
+แทนที่การโจมตี burst
+On-Action จะสุ่ม trigger Combat Ability ที่ผู้เล่นมี (On-Start, On-Hit, On-Damaged, On-Half)
+จำนวนครั้งเท่ากับช่อง Action gauge
+
+Replaces normal On-Action behavior.
+On-Action: randomly trigger player Combat Abilities x Action gauge slots times.","Restoration
+ทุกครั้งที่ random Effect ทำงาน ผู้เล่นจะ Restore HP 1
+
+Each random ability trigger restores 1 HP.",,"Extra Burner
+เพิ่ม Action gauge max slots อีก 1/2/3 ช่อง
+
++1/2/3 to Action gauge max slots."
+,"Double Down
+ทุก random Effect จะทำงาน 2 ครั้งต่อ 1 trigger
+
+Each random ability trigger procs twice per activation.",,
+,,,
+"Hunter
+
+On-Action ผู้เล่นจะได้รับ ATK เพิ่มขึ้น = จำนวนช่อง Action gauge
+ATK ที่ได้จะคงอยู่ตลอด combat นี้
+
+On-Action: gain ATK equal to Action gauge slots.
+Lasts until combat ends.","Another Shot
+On-Action: มีโอกาส 25/35/50% ที่ Action gauge จะไม่ reset 
+เมื่อทำงาน ATK ลดลง 1 ตลอด combat นี้
+
+On-Action: 25/35/50% chance that Action gauge does not reset.
+when trigger : lose 1 ATK Lasts until combat ends.",,"Tenderize
+On-Hit จะทำงานเพิ่มขึ้นตามจำนวน Action gauge max slots
+
+On-Hit triggers additional times equal to Action gauge max slots."
+,,,"Second Wind
+สามารถหลบหลีกได้ โดยอัตราการหลบหลีกเพิ่มตาม Action gauge max slots ช่องละ 5/7/10%
+
+Gain dodge chance: 5/7/10% per current Action gauge max slots."
+,,,"Boning Knife
+การโจมตีจะไม่สนใจค่า DEF ของศัตรู
+
+Attacks ignore enemy DEF."
+"Devourer
+Replaces On-Action
+
+แทนที่การโจมตี burst ปกติ
+On-Action จะสุ่มขโมย stat ของศัตรู 1 ชนิด (ATK/DEF/SPD) ต่อจำนวนช่อง Action gauge max slot 
+ผู้เล่นได้ stat เพิ่ม | ศัตรูเสีย stat เท่ากัน 
+stat คงอยู่ตลอด combat นี้
+
+On-Action: randomly steal one stat (ATK/DEF/SPD) from enemy.
+Amount per Action gauge max slots. Player gains, enemy loses.
+Lasts until combat ends.","Gauge Heist
+เมื่อ Action gauge เต็มผู้เล่นจะขโมย Action gauge ปัจจุบันของศัตรู 1 ช่อง
+(ไม่กระทบ max Action gauge ของศัตรู)
+
+On-Action : steal 1 current Action gauge slot from enemy.
+Does not affect enemy's max Action gauge.",,"Hot Pan Reflex
+On-Damaged จะทำงาน 2 ครั้งต่อ 1 trigger
+
+On-Damaged triggers twice per activation."
+,,,"Mise en Place
+เมื่อ Action gauge เต็มผู้เล่นจะ Restore HP 1/2/3
+
+On-Action player restores 1/2/3 HP."

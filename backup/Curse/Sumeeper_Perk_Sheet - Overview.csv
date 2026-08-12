@@ -1,0 +1,16 @@
+Sumeeper — Perk Reference Sheet,
+สรุปโครงสร้างระบบ Perk ทั้งหมด — จัดทำจาก sumeeper_data_-_Perk.csv,
+,
+โครงสร้าง Perk,
+Primary Perk,6 สาย — เลือกได้ 1 สายต่อ 1 รัน กำหนดพฤติกรรมหลัก
+Secondary Perk,9 ใบ — ผูกกับ Primary Perk แต่ละสาย (1-2 ใบต่อสาย)
+Normal Perk,9 ใบ — ไม่ผูกกับสายใด เลือกได้อิสระ
+,
+สาย Primary Perk ทั้งหมด,
+ชื่อสาย,Secondary ที่ผูกด้วย
+Protector,"Full-Counter, Guarding"
+Berserker,Pure Heat
+Duelist,"Combo Strike, Full Force"
+Alchemist,"Restoration, Double Down"
+Hunter,Another Shot
+Devourer,Gauge Heist
