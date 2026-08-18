@@ -17,10 +17,14 @@ The user communicates in Thai; documents are written in Thai with English techni
 ## Running the sim
 
 ```bash
-cd D:/Sumeeper/simulate && PYTHONIOENCODING=utf-8 python sumeeper_combat_sim.py
+cd D:/Sumeeper/simulate && python sumeeper_combat_sim.py
 ```
 
-Requires `openpyxl`. `PYTHONIOENCODING=utf-8` is needed on Windows because monster names are non-ASCII. Output: `P`/`M`/`TIMEOUT` per matchup with tick count and remaining HP.
+Requires `openpyxl`. Works from any shell — the script forces UTF-8 stdout itself (monster names are non-ASCII). Output: `P`/`M`/`TIMEOUT` per matchup with tick count and remaining HP.
+
+For a visual report, run `python sumeeper_sim_report.py` in the same folder — it re-runs every matchup and writes `sim_report.html` (self-contained; open in any browser): win/loss heatmap with margin coloring, click any cell for that fight's HP/DEF timeline with Special markers, plus a **Sandbox** card where the user picks any 0–3 weapons (ordered) and any monster and the fight runs instantly in the browser. The test loadouts live in `BUILDS` at the bottom of `sumeeper_combat_sim.py`, keyed by monster tier.
+
+⚠️ The Sandbox works via a JS port of the combat engine embedded in the report template (`runFight` inside `sumeeper_sim_report.py`). **Any combat-rule change must be applied to the Python engine AND this JS port**, then verified by regenerating the report — the page can self-check: every heatmap cell re-run through the JS engine must match the Python result exactly (54/54 as of last sync).
 
 ## Combat model
 

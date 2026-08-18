@@ -20,7 +20,11 @@ player Special = burst hit with sum of per-action loadout ATK, one attack
 On-Half/On-Exposed fire once; Convert/Eater/Scaling logged not simulated;
 'Shield' target (none in current data) is treated as Armor; Fury not in any data yet.
 """
+import sys
 import openpyxl
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")  # monster names are non-ASCII; Windows consoles default to cp874/cp1252
 
 GAUGE_MAX = 10
 PLAYER = dict(hp=10, atk=1, dfs=0, spd=1, chg=1, maxag=2)
@@ -121,7 +125,9 @@ def fire(ent, foe, when, sim, once=False, abil=None):
             apply_ab(a, ent, foe, when, sim)
 
 class Sim:
-    def __init__(s): s.notes = set()
+    def __init__(s):
+        s.notes = set()
+        s.events = []  # (tick, side) for each Special fired; side = "P"/"M"
 
 def deal(defender, attacker, dmg, sim):
     """DEF pool absorbs 1:1, remainder spills into HP. On-Exposed on >0 -> 0 transition only."""
@@ -161,6 +167,7 @@ def step(ent, foe, sim, t):
     ent.cur_abil = ent.abilities
 
 def do_special(ent, foe, sim, t):
+    sim.events.append((t, "P" if ent.name == "player" else "M"))
     sp = [a for a in ent.abilities if a.get("lane") == "Special"]
     if sp:
         for a in sp: apply_ab(a, ent, foe, "Special", sim)
@@ -193,6 +200,7 @@ def fight(loadout_names, mkey):
     fire(p, e, "On-Start", sim, once=True, abil=p.abilities)
     fire(e, p, "On-Start", sim, once=True, abil=e.abilities)
     t = 0
+    history = [(0, p.hp, p.dfs, e.hp, e.dfs)]  # (tick, pHP, pDEF, mHP, mDEF)
     while t < TICK_LIMIT and p.hp > 0 and e.hp > 0:
         t += 1
         # fill rate = SPD of the active (next-to-act) entry + any SPD bonus; floored at 1 so rotation never stalls
@@ -201,13 +209,18 @@ def fight(loadout_names, mkey):
         if p.sgauge >= GAUGE_MAX:
             p.sgauge -= GAUGE_MAX
             step(p, e, sim, t)
-        if e.hp <= 0 or p.hp <= 0: break
+        if e.hp <= 0 or p.hp <= 0:
+            history.append((t, p.hp, p.dfs, e.hp, e.dfs))
+            break
         if e.sgauge >= GAUGE_MAX:
             e.sgauge -= GAUGE_MAX
             step(e, p, sim, t)
+        history.append((t, p.hp, p.dfs, e.hp, e.dfs))
     win = "P" if e.hp <= 0 else ("M" if p.hp <= 0 else "TIMEOUT")
     return dict(win=win, ticks=t, php=round(p.hp, 1), mhp=round(e.hp, 1),
-                psp=p.specials, msp=e.specials, notes=sim.notes)
+                pmaxhp=p.maxhp, mmaxhp=e.maxhp,
+                psp=p.specials, msp=e.specials, notes=sim.notes,
+                history=history, events=sim.events)
 
 # ---------- archetype loadouts per monster-tier gear stage ----------
 BUILDS = {
@@ -234,19 +247,20 @@ order = ["MONSTER_ORANGECAT","MONSTER_ONPIRENION","MONSTER_MUSHROOMRAT","MONSTER
          "MONSTER_BROCOLION","MONSTER_BANANAOCTOPUS","MONSTER_UBEECORN","MONSTER_MONKEYCUPSSPICES",
          "MONSTER_DEARBOKCHOY","MONSTER_JELLYUDON"]
 
-allnotes = set()
-print(f"{'Monster':18}{'T':>2} | " + " | ".join(f"{b:^24}" for b in ["Heavy-1","Rush-3","Bal-2"]))
-print("-" * 100)
-for mk in order:
-    m = monsters[mk]
-    cells = []
-    for bname in ["Heavy-1", "Rush-3", "Bal-2"]:
-        res = fight(BUILDS[m["tier"]][bname], mk)
-        allnotes |= res["notes"]
-        tag = res["win"]
-        cells.append(f"{tag} t{res['ticks']:<3} pHP{res['php']:>5} mHP{res['mhp']:>5}")
-    print(f"{m['name'][:18]:18}{m['tier']:>2} | " + " | ".join(f"{c:24}" for c in cells))
-print()
-print("NOT SIMULATED:", sorted(allnotes))
+if __name__ == "__main__":
+    allnotes = set()
+    print(f"{'Monster':18}{'T':>2} | " + " | ".join(f"{b:^24}" for b in ["Heavy-1","Rush-3","Bal-2"]))
+    print("-" * 100)
+    for mk in order:
+        m = monsters[mk]
+        cells = []
+        for bname in ["Heavy-1", "Rush-3", "Bal-2"]:
+            res = fight(BUILDS[m["tier"]][bname], mk)
+            allnotes |= res["notes"]
+            tag = res["win"]
+            cells.append(f"{tag} t{res['ticks']:<3} pHP{res['php']:>5} mHP{res['mhp']:>5}")
+        print(f"{m['name'][:18]:18}{m['tier']:>2} | " + " | ".join(f"{c:24}" for c in cells))
+    print()
+    print("NOT SIMULATED:", sorted(allnotes))
 
 
