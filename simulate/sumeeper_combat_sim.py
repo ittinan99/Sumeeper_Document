@@ -4,14 +4,19 @@ Damage model per GDD "Damage Calculate": dmg = ATK - Armor, floored at 1;
 DEF is a depleting pool that eats damage 1:1 and spills the remainder into HP;
 DEF refills from base+equipment each combat. Thorn ignores Armor and the floor
 but still eats the attacker's DEF pool first.
-Per-action stats: an action with ATK 0 substitutes the owner's base ATK
-(substitution, not additive); same rule for Charge 0 -> base Charge.
+Rotation is per-action: one Speed Gauge fill = one action by the active
+sequence entry, then the rotation advances. Fill rate = SPD of the active
+entry. Per-action ATK/SPD/Charge = owner base + piece stat (ADDITIVE, no
+substitution); DEF is the only stat summed across the whole loadout.
 Player base (starter character, per design): HP10 ATK1 DEF0 SPD1 Charge1 MaxAG2.
 On-Exposed fires only when DEF transitions >0 -> 0 (never if it starts at 0).
 Action Gauge overflow is discarded on reset.
 Assumptions (declared): speed gauge max 10; player wins ties;
-player Special = burst hit with sum of effective loadout ATK, one attack
-(Armor once, floor 1, eats DEF); empty loadout = single base-ATK attack;
+feast sheet values are final per-action values (base already baked in),
+feast entity SPD is the fill rate for every action; ability Gain SPD adds
+to the owner's fill rate for all actions;
+player Special = burst hit with sum of per-action loadout ATK, one attack
+(Armor once, floor 1, eats DEF); empty loadout = pure base-stat attack;
 On-Half/On-Exposed fire once; Convert/Eater/Scaling logged not simulated;
 'Shield' target (none in current data) is treated as Armor; Fury not in any data yet.
 """
@@ -72,12 +77,14 @@ for r in range(2, ca.max_row + 1):
 
 # ---------- entity ----------
 class Ent:
-    def __init__(s, name, hp, dfs, spd, maxag):
+    def __init__(s, name, hp, dfs, maxag):
         s.name, s.hp, s.maxhp = name, hp, hp
-        s.dfs, s.spd, s.maxag = dfs, spd, maxag
+        s.dfs, s.maxag = dfs, maxag
+        s.spd = 0  # SPD bonus from abilities; fill rate = active entry spd + this
         s.atk_bonus = 0
         s.thorn = s.armor = 0
         s.sgauge = s.agauge = 0.0
+        s.seq_idx = 0
         s.fired = set()
         s.log = []
 
@@ -141,15 +148,16 @@ def hit(attacker, defender, atk, sim, t):
         deal(attacker, defender, defender.thorn, sim)  # no Armor cut, no floor
     return dmg
 
-def play_seq(ent, foe, sim, t):
-    for entry in ent.sequence:
-        if ent.hp <= 0 or foe.hp <= 0: break
-        ent.cur_abil = ent.abilities + entry.get("abil", [])
-        hit(ent, foe, entry["atk"] + ent.atk_bonus, sim, t)
-        ent.agauge += entry["chg"]
-        if ent.agauge >= ent.maxag and foe.hp > 0:
-            ent.agauge = 0
-            do_special(ent, foe, sim, t)
+def step(ent, foe, sim, t):
+    """One gauge fill = one action by the active sequence entry, then rotate."""
+    entry = ent.sequence[ent.seq_idx]
+    ent.seq_idx = (ent.seq_idx + 1) % len(ent.sequence)
+    ent.cur_abil = ent.abilities + entry.get("abil", [])
+    hit(ent, foe, entry["atk"] + ent.atk_bonus, sim, t)
+    ent.agauge += entry["chg"]
+    if ent.agauge >= ent.maxag and foe.hp > 0 and ent.hp > 0:
+        ent.agauge = 0
+        do_special(ent, foe, sim, t)
     ent.cur_abil = ent.abilities
 
 def do_special(ent, foe, sim, t):
@@ -166,18 +174,18 @@ def fight(loadout_names, mkey):
     sim = Sim()
     m = monsters[mkey]
     pw = [weapons[n] for n in loadout_names]
-    p = Ent("player", PLAYER["hp"], PLAYER["dfs"] + sum(w["dfs"] for w in pw),
-            PLAYER["spd"] + sum(w["spd"] for w in pw), PLAYER["maxag"])
-    # ATK/Charge 0 -> substitute base stat (per GDD); empty loadout -> single base attack
+    p = Ent("player", PLAYER["hp"], PLAYER["dfs"] + sum(w["dfs"] for w in pw), PLAYER["maxag"])
+    # per-action values = base + piece stat (additive, per GDD); empty loadout -> pure base attack
     if pw:
-        p.sequence = [dict(atk=w["atk"] or PLAYER["atk"], chg=w["chg"] or PLAYER["chg"],
+        p.sequence = [dict(atk=PLAYER["atk"] + w["atk"], spd=PLAYER["spd"] + w["spd"],
+                           chg=PLAYER["chg"] + w["chg"],
                            abil=[a for a in w["abil"] if a["lane"] == "Action"]) for w in pw]
     else:
-        p.sequence = [dict(atk=PLAYER["atk"], chg=PLAYER["chg"], abil=[])]
+        p.sequence = [dict(atk=PLAYER["atk"], spd=PLAYER["spd"], chg=PLAYER["chg"], abil=[])]
     p.abilities = [a for w in pw for a in w["abil"] if a["lane"] != "Action"]
     p.burst_atk = sum(e["atk"] for e in p.sequence)
-    e = Ent(m["name"], m["hp"], m["dfs"], m["spd"], m["maxag"])
-    e.sequence = m["seq"]
+    e = Ent(m["name"], m["hp"], m["dfs"], m["maxag"])
+    e.sequence = [dict(x, spd=m["spd"]) for x in m["seq"]]  # feast sheet values are final; entity SPD drives every action
     e.abilities = m["abil"]
     e.burst_atk = 0
     p.specials = e.specials = 0
@@ -187,14 +195,16 @@ def fight(loadout_names, mkey):
     t = 0
     while t < TICK_LIMIT and p.hp > 0 and e.hp > 0:
         t += 1
-        p.sgauge += p.spd; e.sgauge += e.spd
+        # fill rate = SPD of the active (next-to-act) entry + any SPD bonus; floored at 1 so rotation never stalls
+        p.sgauge += max(1, p.sequence[p.seq_idx]["spd"] + p.spd)
+        e.sgauge += max(1, e.sequence[e.seq_idx]["spd"] + e.spd)
         if p.sgauge >= GAUGE_MAX:
             p.sgauge -= GAUGE_MAX
-            play_seq(p, e, sim, t)
+            step(p, e, sim, t)
         if e.hp <= 0 or p.hp <= 0: break
         if e.sgauge >= GAUGE_MAX:
             e.sgauge -= GAUGE_MAX
-            play_seq(e, p, sim, t)
+            step(e, p, sim, t)
     win = "P" if e.hp <= 0 else ("M" if p.hp <= 0 else "TIMEOUT")
     return dict(win=win, ticks=t, php=round(p.hp, 1), mhp=round(e.hp, 1),
                 psp=p.specials, msp=e.specials, notes=sim.notes)

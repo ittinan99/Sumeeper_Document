@@ -76,11 +76,11 @@ Sumeeper เป็นเกมที่ผู้เล่นสามารถ�
 > 
 > **2.** ค่าพลังงาน(STA) : ค่าที่เอาไว้ใช้ในการปักธง และหลบหนี
 > 
-> **3.** ค่าป้องกัน(DEF) : หลอดกันชนที่รับความเสียหายแทน HP ทำงานเหมือนหลอดเลือดชั้นแรก — ถูกความเสียหายกินลดลงตรงๆ และเมื่อหมดแล้วความเสียหายส่วนที่เหลือจึงเข้า HP เป็นค่าระดับตัว (Entity-level) มาจากค่าพื้นฐานของตัวละคร รวมกับ Equipment ที่ถูกเลือกเข้า combat และ **เติมเต็มใหม่ทุกครั้งที่เริ่ม combat** (ดูหัวข้อ Damage Calculate)
+> **3.** ค่าป้องกัน(DEF) : หลอดกันชนที่รับความเสียหายแทน HP ทำงานเหมือนหลอดเลือดชั้นแรก — ถูกความเสียหายกินลดลงตรงๆ และเมื่อหมดแล้วความเสียหายส่วนที่เหลือจึงเข้า HP เป็นค่าระดับตัว (Entity-level) มาจากค่าพื้นฐานของตัวละคร รวมกับ Equipment **ทุกชิ้น**ที่ถูกเลือกเข้า combat (เป็น stat เดียวที่รวมจากทั้ง loadout — ต่างจาก ATK/SPD/Charge ที่เป็นรายชิ้น) และ **เติมเต็มใหม่ทุกครั้งที่เริ่ม combat** (ดูหัวข้อ Damage Calculate)
 > 
-> **4.** ค่าความเร็ว(SPD) : ค่าที่เป็นตัวขับ Speed Gauge และใช้คำนวนในการหลบหนี เป็นค่าระดับตัว (Entity-level) มาจากค่าพื้นฐานของตัวละคร รวมกับ Equipment ที่ถูกเลือกเข้า combat
+> **4.** ค่าความเร็ว(SPD) : ค่าที่เป็นตัวขับ Speed Gauge และใช้คำนวนในการหลบหนี เป็นค่าราย action (Per-action) — อัตราเติม Speed Gauge ณ ขณะใดขณะหนึ่ง = base SPD ของตัวละคร + SPD ของ Equipment ชิ้นที่ active (ชิ้นถัดไปที่จะออก action) **ไม่ใช่ผลรวมจากทุกชิ้นใน loadout**
 > 
-> **5.** ค่าพลังโจมตี(ATK) : ค่าความเสียหายเมื่อทำการโจมตี เป็นค่าราย action (Per-action) — แต่ละ action ใช้ ATK ของ Equipment ชิ้นที่ออก action นั้น หากชิ้นนั้นมี ATK 0 (หรือไม่มี Equipment เลย) จะใช้ base ATK ของตัวละครแทน โดยเป็นการ**แทนที่**เฉพาะเมื่อเป็น 0 ไม่ใช่การบวกเพิ่ม
+> **5.** ค่าพลังโจมตี(ATK) : ค่าความเสียหายเมื่อทำการโจมตี เป็นค่าราย action (Per-action) — ATK ของแต่ละ action = base ATK ของตัวละคร **+** ATK ของ Equipment ชิ้นที่ออก action นั้น (บวกกันเสมอ ไม่มีการแทนที่ — ชิ้นที่ ATK 0 จึงตีด้วย base ATK พอดี)
 > 
 
 Gluttony Gauge (เกจความตะกละ) : แทนที่ค่าประสบการณ์(EXP) เดิม — ได้รับจากการกำจัด Feast เท่านั้น เป็นค่าคงที่ตาม Tier (T1–T5) และรีเซ็ตทุกครั้งที่เปลี่ยนชั้น เมื่อสะสมถึง threshold ภายในชั้น ผู้เล่นจะต้องเลือกรับ curse 1 จาก 2 ตัวเลือก (ดูหัวข้อ Curse และ Gluttony Gauge)
@@ -232,31 +232,33 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 
 ### **Action Sequence (ลำดับการกระทำ)**
 
-- ทุกครั้งที่ Speed Gauge เต็ม ผู้กระทำจะเล่น Action Sequence ของตนตามลำดับที่กำหนดไว้ (Fixed Rotation — วนลูป)
+- Action Sequence เดินแบบ **ทีละ action** (Fixed Rotation — วนลูป) : ณ ขณะใดขณะหนึ่งจะมีสมาชิกใน sequence หนึ่งตำแหน่งเป็น **active** — Speed Gauge เติมด้วย SPD ของตำแหน่งนั้น เมื่อเต็ม ตำแหน่งนั้นออก action 1 ครั้ง แล้วเลื่อนให้ตำแหน่งถัดไปเป็น active วนไปเรื่อยๆ
 - การกระทำแต่ละครั้งใน sequence เรียกว่า action โดย 1 action = การโจมตี 1 ครั้ง
-- ฝั่งผู้เล่น : sequence มาจาก Equipment ที่ถูกเลือกใน Pre-Combat — แต่ละ action คือการโจมตีด้วย Equipment ชิ้นนั้น โดยใช้ค่า ATK ของชิ้นนั้น (หากไม่เลือก Equipment เลย sequence = โจมตี 1 ครั้งด้วย base ATK)
-- **กติกากลาง (ใช้ทั้งสองฝั่ง)** : action ใดที่ค่า ATK เป็น 0 จะโจมตีด้วย base ATK ของเจ้าของแทน ซึ่งไม่มีทางต่ำกว่า 1 — จึงไม่มี action ที่ตีแล้วไม่เกิดผลเลย
-- ฝั่ง Feast : sequence มาจากตัว Feast เอง อิงตาม Tier (ดูหัวข้อ Feast Sequence)
+- ฝั่งผู้เล่น : sequence มาจาก Equipment ที่ถูกเลือกใน Pre-Combat — แต่ละ action คือการโจมตีด้วย Equipment ชิ้นนั้น (หากไม่เลือก Equipment เลย sequence = โจมตีด้วย base stat ล้วน)
+- **กติกากลาง (ใช้ทั้งสองฝั่ง)** : ค่าที่ใช้จริงของทุก action = **base stat ของตัวละคร + stat ของ action นั้น** ทั้ง ATK, SPD และ Charge (บวกกันเสมอ ไม่มีการแทนที่) — base แต่ละค่าไม่ต่ำกว่า 1 จึงไม่มี action ที่ตีแล้วไม่เกิดผล และไม่มี action ที่ค้างไม่มาถึง
+- ฝั่ง Feast : sequence มาจากตัว Feast เอง อิงตาม Tier (ดูหัวข้อ Feast Sequence) และเดินทีละ action ด้วยกติกาเดียวกัน — Feast มี SPD ค่าเดียวทั้งตัว จึงใช้ค่านั้นเป็นอัตราเติมของทุก action
+- ผลเชิงออกแบบ : จำนวนชิ้นใน loadout **ไม่ได้เพิ่มความถี่การโจมตี** — ถือ 3 ชิ้นได้ความหลากหลาย (ability, DEF รวม, burst ใหญ่) ไม่ใช่ตีถี่ขึ้น 3 เท่า ส่วน build ชิ้นเดียวหมุนอาวุธชิ้นเดิมซ้ำทุก action
 - ทุก action นับเป็นการโจมตี — trigger On-Hit ของผู้กระทำ และ On-Damaged ของผู้ถูกกระทำ ตามปกติ
 
 ### **Action Gauge (หลอด Special) :**
 
 - Gauge นี้จะถูกแบ่งเป็นช่อง โดยจำนวนช่องสูงสุด (Max) เป็นค่าคงที่อิงจากตัวละคร และเปลี่ยนแปลงได้ด้วย Perk — ไม่ผันผวนตาม loadout
-- ทุกครั้งที่ออก action, Action Gauge จะเพิ่มขึ้นตามค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet) — หาก Charge ของชิ้นนั้นเป็น 0 จะใช้ base Charge ของตัวละครแทน (กติกาแทนที่แบบเดียวกับ ATK)
+- ทุกครั้งที่ออก action, Action Gauge จะเพิ่มขึ้น = base Charge ของตัวละคร + ค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet — กติกา base + stat เดียวกับ ATK/SPD)
 - เมื่อทุกช่องใน Gauge นี้เต็ม ผู้กระทำจะใช้งาน Special
 - เมื่อเต็มแล้ว Gauge จะรีเซ็ตให้ทุกช่องกลับมาว่าง — Charge ส่วนที่เกินจากจุดเต็มจะถูกทิ้ง ไม่ทบข้ามรอบ
 
 ### **Special (ท่าพิเศษ)**
 
 - Special คือชื่อใหม่ของ trigger เดิม "On-Action" — ความสามารถทั้งหมดที่เคยอ้างอิง On-Action ให้ทำงานตอน Special แทน (logic เดิมทั้งหมด เปลี่ยนเฉพาะชื่อ)
-- Special พื้นฐานของผู้เล่นคือการโจมตี burst : ความเสียหาย = ผลรวม ATK ของทุกชิ้นใน loadout (ชิ้นที่ ATK 0 คิดเป็น base ATK) นับเป็นการโจมตี 1 ครั้ง — โดน Armor หักครั้งเดียว ติด Damage Floor 1 และกินหลอด DEF ก่อนตามปกติ — Primary Perk บางสายจะ Replaces Special (เช่น Duelist, Alchemist, Devourer) ตาม perk sheet
+- Special พื้นฐานของผู้เล่นคือการโจมตี burst : ความเสียหาย = ผลรวม ATK ราย action ของทุกชิ้นใน loadout (แต่ละชิ้นคิด base ATK + ATK ของชิ้นนั้น) นับเป็นการโจมตี 1 ครั้ง — โดน Armor หักครั้งเดียว ติด Damage Floor 1 และกินหลอด DEF ก่อนตามปกติ — Primary Perk บางสายจะ Replaces Special (เช่น Duelist, Alchemist, Devourer) ตาม perk sheet
 - Feast ส่วนใหญ่มี Special ของตัวเอง โดยนำ ability สาย active/offensive เดิม (On-Start/On-Hit ที่เป็นการบัฟตัวเอง ตีแรงพิเศษ หรือ debuff ผู้เล่น) มาปรับให้ทำงานตอน Special แทน ส่วน ability สาย reactive (On-Damaged, On-Exposed, On-Half) คงเป็น trigger เดิม
 
 ### **Speed Gauge (หลอดความเร็ว)**
 
-- Value ของ Gauge นี้จะเพิ่มเรื่อยๆ โดยสัมพันธ์กับค่าความเร็ว(SPD)
-- เมื่อ Gauge นี้เต็ม ผู้กระทำจะเล่น Action Sequence ของตนหนึ่งรอบ
-- เมื่อเต็มแล้ว Gauge จะรีเซ็ตให้ value มาเริ่มที่ 0 ใหม่
+- Value ของ Gauge นี้จะเพิ่มเรื่อยๆ ด้วยอัตรา = base SPD + SPD ของชิ้นที่ active (ชิ้นถัดไปที่จะออก action) — เปลี่ยนชิ้น active อัตราก็เปลี่ยนตาม
+- **อัตราเติมขั้นต่ำ 1 เสมอ** — ต่อให้ SPD ติดลบจาก stat หรือ debuff ก็ตาม เพื่อการันตีว่าทุก action มาถึงแน่นอน rotation ไม่มีทางค้าง (เกมเป็น watch-only ห้ามมี state ที่ไม่เดินหน้า)
+- เมื่อ Gauge นี้เต็ม ชิ้นที่ active จะออก action 1 ครั้ง แล้วลำดับเลื่อนไปชิ้นถัดไปใน sequence
+- เมื่อเต็มแล้ว หักค่าเต็มออกจาก value — **เศษความเร็วที่เกินทบไปรอบถัดไป** (ต่างจาก Action Gauge ที่ทิ้งส่วนเกิน) เพื่อให้ความต่างของ SPD ยังมีผลจริงแม้ค่าจะสูงจนเกือบออก action ได้ทุก tick
 
 ### **Damage Calculate (การคำนวนความเสียหาย)**
 
@@ -264,7 +266,7 @@ DEF **ไม่ใช่ตัวลบความเสียหาย** อ�
 
 **ลำดับการคำนวน (ต่อการโจมตี 1 ครั้ง)**
 
-> **1.** ความเสียหายตั้งต้น = ค่า ATK ของ action นั้น (action ที่ ATK 0 ใช้ base ATK ของเจ้าของแทน — ดูหัวข้อ Action Sequence)
+> **1.** ความเสียหายตั้งต้น = ค่า ATK ของ action นั้น (= base ATK ของเจ้าของ + ATK ของชิ้นที่ออก action — ดูหัวข้อ Action Sequence)
 > 
 > 
 > **2.** หักด้วย Armor stack ของผู้ถูกกระทำ (ตัวลดความเสียหายตัวเดียวในระบบ)
@@ -468,7 +470,7 @@ Recipe(สูตรอาหาร):
 
 อุปกรณ์เป็นหัวใจของการสร้าง "Build(สายการเล่น)" ของผู้เล่นใน run นั้นๆ ผู้เล่นถือ Equipment ได้สูงสุด 6 ชิ้น และเลือกเข้า combat ได้ครั้งละ 0–3 ชิ้นในช่วง Pre-Combat เพื่อใช้เป็น Action Sequence (ไม่เลือกเลยก็เข้า combat ได้ โดยจะโจมตีด้วย base stat ของตัวละคร)
 
-- Equipment ให้ค่า ATK (ใช้เมื่อชิ้นนั้นออก action), DEF/SPD (รวมเป็นค่าระดับตัวเมื่อถูกเลือกเข้า combat), ค่า Charge (จำนวนช่อง Action Gauge ที่เติมเมื่อออก action) และ Ability ขณะถูกเลือกเข้า combat
+- Equipment ให้ค่า ATK/SPD/Charge เป็นค่ารายชิ้น — มีผลเฉพาะตอนชิ้นนั้น active/ออก action โดยบวกกับ base stat ของตัวละครเสมอ — ส่วน DEF เป็นค่าเดียวที่รวมจากทุกชิ้นเป็นค่าระดับตัว (หลอด DEF) และ Ability ทำงานขณะถูกเลือกเข้า combat
 - Equipment ไม่ให้ค่า HP — Max HP ของผู้เล่นมาจากค่าพื้นฐานตัวละครและ Recipe เท่านั้น
 - Equipment ที่ไม่ถูกเลือกเข้า combat จะไม่ให้ stat และไม่ trigger effect ใดๆ ("สิ่งที่อยู่ใน combat คือสิ่งที่คุณเลือกเข้ามา")
 
@@ -570,7 +572,7 @@ Curse เป็นผลเสียที่จะส่งผลต่อผ�
 
 # **Character :**
 
-> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Action Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2** (base ATK และ base Charge เป็นค่าที่ถูกใช้แทนเมื่อ action ของ Equipment มีค่านั้นเป็น 0 — ทำให้ทุก action เข้า Damage Floor 1 ได้เสมอแม้ไม่มี Equipment) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
+> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Action Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2** (base ATK/SPD/Charge ถูก**บวก**เข้ากับค่าของชิ้นที่ออก action ทุกครั้ง — การอัปเกรด base stat จึงส่งผลกับทุก action ของทุก loadout) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
 > 
 
 # **Floor Variant :**
