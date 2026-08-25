@@ -12,9 +12,12 @@ Player base (starter character, per design): HP10 ATK1 DEF0 SPD1 Charge1 MaxAG2.
 On-Exposed fires only when DEF transitions >0 -> 0 (never if it starts at 0).
 Action Gauge overflow is discarded on reset.
 Assumptions (declared): speed gauge max 10; player wins ties;
-feast sheet values are final per-action values (base already baked in),
-feast entity SPD is the fill rate for every action; ability Gain SPD adds
-to the owner's fill rate for all actions;
+feast per-action SPD = Monsters Config base SPD + Feast Sequence entry SPD
+(same additive rule as the player side); feast per-action ATK/Charge are the
+sequence entry values as-is (Config ATK is legacy, not added); feast DEF pool
+= Config DEF + sum of entry DEF; feast HP/MaxAG come from the Feast tab's
+hand-set value cells; ability Gain SPD adds to the owner's fill rate for all
+actions;
 player Special = burst hit with sum of per-action loadout ATK, one attack
 (Armor once, floor 1, eats DEF); empty loadout = pure base-stat attack;
 On-Half/On-Exposed fire once; Convert/Eater/Scaling logged not simulated;
@@ -30,8 +33,17 @@ GAUGE_MAX = 10
 PLAYER = dict(hp=10, atk=1, dfs=0, spd=1, chg=1, maxag=2)
 TICK_LIMIT = 400
 
+def _load(path):
+    """Load a workbook with human-friendly errors (for the balance team)."""
+    try:
+        return openpyxl.load_workbook(path, data_only=True)
+    except FileNotFoundError:
+        sys.exit(f"[ERROR] หาไฟล์ไม่เจอ: {path}\n  ตรวจว่าโฟลเดอร์ game_document อยู่ครบ")
+    except PermissionError:
+        sys.exit(f"[ERROR] เปิดไฟล์ไม่ได้: {path}\n  ถ้าไฟล์เปิดค้างอยู่ใน Excel ให้ปิดก่อนแล้วรันใหม่")
+
 # ---------- load equipment ----------
-ew = openpyxl.load_workbook(r"D:\Sumeeper\game_document\Sumeeper_Equipment_Sheet.xlsx", data_only=True)
+ew = _load(r"D:\Sumeeper\game_document\Sumeeper_Equipment_Sheet.xlsx")
 eq = ew["Equipment"]
 weapons = {}
 for r in range(2, eq.max_row + 1):
@@ -51,26 +63,41 @@ for r in range(2, abs_.max_row + 1):
                                    lane=abs_.cell(r, 8).value))
 
 # ---------- load monsters ----------
-mw = openpyxl.load_workbook(r"D:\Sumeeper\game_document\Sumeeper_Monster_Sheet.xlsx", data_only=True)
-ft, sq, ca = mw["Feast"], mw["Feast Sequence"], mw["Feast Combat Ability"]
+# Bases come from "Monsters Config" (values), per-action stats from "Feast Sequence";
+# only HP and Max AG are read from the "Feast" rollup tab (hand-set value cells, row-aligned
+# with Config). The Feast DEF/SPD formula cells (base + SUM of all entries) are the OLD
+# entity-sum model and are deliberately NOT used: per-action SPD = base SPD + entry SPD,
+# per-action ATK/Charge = entry value as-is (Config ATK is legacy and unused).
+mw = _load(r"D:\Sumeeper\game_document\Sumeeper_Monster_Sheet.xlsx")
+mc, ft, sq, ca = mw["Monsters Config"], mw["Feast"], mw["Feast Sequence"], mw["Feast Combat Ability"]
 monsters = {}
-for r in range(2, ft.max_row + 1):
-    k = ft.cell(r, 1).value
+for r in range(2, mc.max_row + 1):
+    k = mc.cell(r, 1).value
     if not k:
         continue
-    monsters[k] = dict(key=k, name=ft.cell(r, 4).value, tier=int(ft.cell(r, 2).value),
-                       hp=ft.cell(r, 5).value, dfs=ft.cell(r, 6).value, spd=ft.cell(r, 7).value,
-                       maxag=ft.cell(r, 8).value, seq=[], abil=[])
+    monsters[k] = dict(key=k, name=mc.cell(r, 4).value, tier=int(mc.cell(r, 2).value),
+                       hp=ft.cell(r, 5).value, maxag=ft.cell(r, 8).value,
+                       dfs=mc.cell(r, 7).value or 0, base_spd=mc.cell(r, 8).value or 0,
+                       seq=[], abil=[])
 for r in range(3, sq.max_row + 1):
     k = sq.cell(r, 1).value
     if not k:
         continue
-    entry = dict(atk=sq.cell(r, 5).value or 1, chg=sq.cell(r, 8).value or 1, abil=[])  # 0 -> base 1 (substitution rule)
+    entry = dict(atk=sq.cell(r, 5).value or 0, dfs=sq.cell(r, 6).value or 0,
+                 spd=sq.cell(r, 7).value or 0, chg=sq.cell(r, 8).value or 1, abil=[])
     if sq.cell(r, 9).value:
         entry["abil"].append(dict(trig=sq.cell(r, 9).value, verb=sq.cell(r, 10).value,
                                   tgt=sq.cell(r, 11).value, mag=sq.cell(r, 12).value,
                                   lane=sq.cell(r, 14).value))
     monsters[k]["seq"].append(entry)
+for m in monsters.values():
+    m["dfs"] += sum(e["dfs"] for e in m["seq"])  # DEF pool = base + per-entry contributions
+    if m["hp"] is None or m["maxag"] is None:
+        sys.exit(f"[ERROR] ค่า HP/Max AG ของ {m['name']} ในแท็บ Feast ว่างอยู่ (แถว {m['key']})\n"
+                 f"  มักเกิดเพราะเซลล์เป็นสูตรที่ยังไม่ถูกคำนวณ — เปิดไฟล์ Monster Sheet ใน Excel กด Save หนึ่งครั้งแล้วรันใหม่\n"
+                 f"  หรือพิมพ์ค่าเป็นตัวเลขตรงๆ ลงเซลล์นั้นแทนสูตร")
+    if not m["seq"]:
+        sys.exit(f"[ERROR] {m['name']} ไม่มี action ในแท็บ Feast Sequence เลย — เพิ่มอย่างน้อย 1 แถว")
 for r in range(2, ca.max_row + 1):
     k = ca.cell(r, 1).value
     if not k:
@@ -192,7 +219,7 @@ def fight(loadout_names, mkey):
     p.abilities = [a for w in pw for a in w["abil"] if a["lane"] != "Action"]
     p.burst_atk = sum(e["atk"] for e in p.sequence)
     e = Ent(m["name"], m["hp"], m["dfs"], m["maxag"])
-    e.sequence = [dict(x, spd=m["spd"]) for x in m["seq"]]  # feast sheet values are final; entity SPD drives every action
+    e.sequence = [dict(x, spd=m["base_spd"] + x["spd"]) for x in m["seq"]]  # per-action SPD = base + entry (same rule as player)
     e.abilities = m["abil"]
     e.burst_atk = 0
     p.specials = e.specials = 0
@@ -227,16 +254,16 @@ BUILDS = {
     1: {"Heavy-1": ["Spirit Fork"],
         "Rush-3":  ["Mysterious Pot", "Broken Plate", "Mortar and Pestle"],
         "Bal-2":   ["Frying pan", "Chopping Board"]},
-    2: {"Heavy-1": ["Spirit Fork"],
+    2: {"Heavy-1": ["Cast Iron Lid"],
         "Rush-3":  ["Mysterious Pot", "Cloud Cutting Spoon", "Windmill Spatula"],
         "Bal-2":   ["Spirit Fork", "Chopping Board"]},
     3: {"Heavy-1": ["Darkness Apron"],
         "Rush-3":  ["Bottomless Chef's Hat", "Cloud Cutting Spoon", "Infinity Gloves"],
         "Bal-2":   ["Infinity Gloves", "Chopping Board"]},
-    4: {"Heavy-1": ["Emperor Knife"],
+    4: {"Heavy-1": ["Butcher Cleaver"],
         "Rush-3":  ["Bottomless Chef's Hat", "Miracle Knife", "Infinity Gloves"],
         "Bal-2":   ["Emperor Knife", "Immortal Ladle"]},
-    5: {"Heavy-1": ["Emperor Knife"],
+    5: {"Heavy-1": ["Titan Stone Mortar"],
         "Rush-3":  ["Gaint Fork", "Miracle Knife", "Maid Apron"],
         "Bal-2":   ["Emperor Knife", "Dragon Bone Ladle"]},
 }

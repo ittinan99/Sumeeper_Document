@@ -11,7 +11,7 @@ The user communicates in Thai; documents are written in Thai with English techni
 ## Layout
 
 - `game_document/` — **current source of truth**: `Sumeeper_GDD.md` plus the data sheets (`Sumeeper_Equipment_Sheet.xlsx`, `Sumeeper_Monster_Sheet.xlsx`, and Curse/Meal/Perk sheets).
-- `simulate/sumeeper_combat_sim.py` — deterministic combat sim that loads the Equipment and Monster sheets by absolute path (`D:\Sumeeper\game_document\...`) and prints a player-build × monster result matrix.
+- `simulate/sumeeper_combat_sim.py` — deterministic combat sim that loads the Equipment and Monster sheets by absolute path (`D:\Sumeeper\game_document\...`) and prints a player-build × monster result matrix. `simulate/README.md` is the Thai-language guide for the balance team (double-click `run_report.bat` workflow); `reference_baseline.json` + `reference/` hold the team's reference values — the report auto-diffs current sheets against them (✱ = outcome flipped), and `make_reference.bat` re-baselines. Balance numbers are now owned by a human tuner; treat our tuned set as the reference/guideline, not something to keep re-tuning unprompted.
 - `backup/` — historical versions of documents and sheets. Read-only reference; never edit and never treat as current data.
 
 ## Running the sim
@@ -42,7 +42,7 @@ The authoritative spec is the GDD sections **Auto battle** and **Damage Calculat
 - สมาชิกใน sequence เป็น **active ทีละหนึ่งตำแหน่ง** — Speed Gauge เติมด้วยอัตรา base SPD + SPD ของชิ้น active (+ โบนัส SPD จาก ability) **ขั้นต่ำ 1 เสมอ** (การันตีว่า rotation ไม่มีทางค้าง — เกม watch-only ห้ามมี state ที่ไม่เดินหน้า)
 - เมื่อ Speed Gauge เต็ม: ชิ้น active โจมตี 1 ครั้ง → Action Gauge เพิ่ม (base Charge + Charge ชิ้นนั้น) → เลื่อนให้ชิ้นถัดไปเป็น active; **เศษ Speed Gauge ทบไปรอบถัดไป** (ต่างจาก Action Gauge ที่ทิ้งส่วนเกิน)
 - **จำนวนชิ้นไม่เพิ่มความถี่โจมตี** — ถือ 3 ชิ้นได้ความหลากหลาย, DEF รวม, burst ใหญ่ ไม่ใช่ตีถี่ขึ้น 3 เท่า; build ชิ้นเดียวหมุนชิ้นเดิมซ้ำทุก action
-- ฝั่ง Feast เดินกติกาเดียวกันทีละ action — ค่าในชีต Monster เป็นค่าจบแล้ว (ไม่บวก base เพิ่ม) และ SPD ระดับตัวใช้เป็นอัตราเติมของทุก action
+- ฝั่ง Feast เดินกติกาเดียวกันทีละ action — **SPD ราย action = base SPD (Monsters Config) + SPD ของ entry นั้น (Feast Sequence)** เหมือนผู้เล่น ส่วน ATK/Charge ราย action ใช้ค่า entry ตรงๆ (Config ATK เป็น legacy ไม่ถูกใช้) และหลอด DEF = Config DEF + Σ entry DEF
 
 ### การคำนวณความเสียหาย (ต่อการโจมตี 1 ครั้ง)
 
@@ -72,7 +72,7 @@ The authoritative spec is the GDD sections **Auto battle** and **Damage Calculat
 
 Combat Power budget system: `CP = Σ(stat × stat-weight) + Charge × charge-weight + Σ(Trigger-w × Verb-w × Magnitude-w × Target-w)` per ability, tuned so CP ≈ the rarity base in `Weights` (Common 6 / Rare 9 / Epic 13 / Legend 17 / Mythic 22). Remember: because per-action values add base stats, the effective in-game value of a sheet stat is sheet value + 1.
 
-`Sumeeper_Monster_Sheet.xlsx` tabs: `Feast` (entity HP/DEF/SPD per monster), `Feast Sequence` (per-action ATK/Charge + action-lane abilities), `Feast Combat Ability` (triggered abilities). Feast sheet values are final per-action values (no base added); the entity SPD drives every action.
+`Sumeeper_Monster_Sheet.xlsx` tabs: `Monsters Config` (base HP/ATK/DEF/SPD per monster — DEF/SPD bases are live, HP/ATK are legacy), `Feast` (rollup: hand-set HP and Max AG **values**; its DEF/SPD formula cells sum ALL sequence entries — that is the old entity-sum model, ignored by the sim), `Feast Sequence` (per-action ATK/DEF/SPD/Charge + action-lane abilities), `Feast Combat Ability` (triggered abilities). Per-action SPD = Config base SPD + entry SPD; per-action ATK/Charge = entry values as-is; DEF pool = Config DEF + Σ entry DEF; HP/MaxAG from the Feast tab's value cells.
 
 ## Working rules
 

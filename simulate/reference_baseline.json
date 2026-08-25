@@ -1,0 +1,897 @@
+{
+ "generated": "2026-08-24 23:31",
+ "note": "ค่าอ้างอิงจากรอบ balance โดยทีม (sim) — ใช้เทียบกับค่าที่จูนใหม่",
+ "monsters": {
+  "MONSTER_ORANGECAT": {
+   "name": "Orange Cat",
+   "tier": 1,
+   "hp": 8,
+   "dfs": 1,
+   "base_spd": 0,
+   "seq": [
+    {
+     "atk": 5,
+     "spd": 1,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_ONPIRENION": {
+   "name": "Onpirenion",
+   "tier": 1,
+   "hp": 8,
+   "dfs": 2,
+   "base_spd": 0,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 1,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_MUSHROOMRAT": {
+   "name": "Mushroom Rat",
+   "tier": 1,
+   "hp": 8,
+   "dfs": 2,
+   "base_spd": 1,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 1,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_CABBAGEDOG": {
+   "name": "Cabbage dog",
+   "tier": 1,
+   "hp": 10,
+   "dfs": 1,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 4,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_CHERRYBIRD": {
+   "name": "Cherry Bird",
+   "tier": 2,
+   "hp": 12,
+   "dfs": 4,
+   "base_spd": 0,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 1,
+     "chg": 1
+    },
+    {
+     "atk": 1,
+     "spd": 1,
+     "chg": 2
+    }
+   ]
+  },
+  "MONSTER_PUDDINGCRAP": {
+   "name": "Pudding Crab",
+   "tier": 2,
+   "hp": 17,
+   "dfs": 4,
+   "base_spd": 1,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 0,
+     "chg": 1
+    },
+    {
+     "atk": 1,
+     "spd": 0,
+     "chg": 2
+    }
+   ]
+  },
+  "MONSTER_SUGARTIGER": {
+   "name": "Sugar Tiger",
+   "tier": 2,
+   "hp": 8,
+   "dfs": 2,
+   "base_spd": 3,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 3,
+     "spd": 2,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_SPICYHEDGEHOG": {
+   "name": "Spicy Hedgehog",
+   "tier": 3,
+   "hp": 12,
+   "dfs": 7,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_BLUEFIN": {
+   "name": "Bluefin In love",
+   "tier": 3,
+   "hp": 16,
+   "dfs": 6,
+   "base_spd": 3,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 1,
+     "spd": 2,
+     "chg": 2
+    }
+   ]
+  },
+  "MONSTER_PIZZATURTLE": {
+   "name": "Pizza Turtle",
+   "tier": 3,
+   "hp": 25,
+   "dfs": 7,
+   "base_spd": 1,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 0,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 0,
+     "chg": 2
+    }
+   ]
+  },
+  "MONSTER_DURAINBOMB": {
+   "name": "Durain Bomb",
+   "tier": 3,
+   "hp": 14,
+   "dfs": 8,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 3,
+     "spd": 0,
+     "chg": 1
+    },
+    {
+     "atk": 3,
+     "spd": 0,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_CHIVE": {
+   "name": "Garlic Chives",
+   "tier": 3,
+   "hp": 6,
+   "dfs": 2,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 3,
+     "spd": 4,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 4,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_BROCOLION": {
+   "name": "BrocoLion",
+   "tier": 4,
+   "hp": 16,
+   "dfs": 6,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 1,
+     "spd": 2,
+     "chg": 2
+    }
+   ]
+  },
+  "MONSTER_BANANAOCTOPUS": {
+   "name": "Banana Octopus",
+   "tier": 4,
+   "hp": 17,
+   "dfs": 5,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_UBEECORN": {
+   "name": "Ubeecorn",
+   "tier": 4,
+   "hp": 14,
+   "dfs": 2,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 3,
+     "spd": 4,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 3,
+     "chg": 2
+    },
+    {
+     "atk": 2,
+     "spd": 3,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_MONKEYCUPSSPICES": {
+   "name": "MonkeyCupsSpices",
+   "tier": 4,
+   "hp": 24,
+   "dfs": 6,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 1,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 1,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_DEARBOKCHOY": {
+   "name": "DearBokchoy",
+   "tier": 5,
+   "hp": 22,
+   "dfs": 4,
+   "base_spd": 2,
+   "seq": [
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 2,
+     "chg": 1
+    },
+    {
+     "atk": 1,
+     "spd": 2,
+     "chg": 1
+    }
+   ]
+  },
+  "MONSTER_JELLYUDON": {
+   "name": "Jelly Udon",
+   "tier": 5,
+   "hp": 30,
+   "dfs": 6,
+   "base_spd": 3,
+   "seq": [
+    {
+     "atk": 1,
+     "spd": 1,
+     "chg": 1
+    },
+    {
+     "atk": 2,
+     "spd": 1,
+     "chg": 1
+    },
+    {
+     "atk": 3,
+     "spd": 1,
+     "chg": 2
+    }
+   ]
+  }
+ },
+ "weapons": {
+  "Frying pan": {
+   "rar": "Common",
+   "atk": 1,
+   "dfs": 1,
+   "spd": 0,
+   "chg": 0
+  },
+  "Broken Plate": {
+   "rar": "Common",
+   "atk": 1,
+   "dfs": 0,
+   "spd": 0,
+   "chg": 0
+  },
+  "Mysterious Pot": {
+   "rar": "Common",
+   "atk": 1,
+   "dfs": 3,
+   "spd": 0,
+   "chg": 1
+  },
+  "Mortar and Pestle": {
+   "rar": "Common",
+   "atk": 0,
+   "dfs": 3,
+   "spd": 1,
+   "chg": 0
+  },
+  "Spirit Fork": {
+   "rar": "Rare",
+   "atk": 4,
+   "dfs": 0,
+   "spd": 0,
+   "chg": 0
+  },
+  "Chopping Board": {
+   "rar": "Rare",
+   "atk": 0,
+   "dfs": 5,
+   "spd": 1,
+   "chg": 0
+  },
+  "Windmill Spatula": {
+   "rar": "Rare",
+   "atk": 0,
+   "dfs": 0,
+   "spd": 1,
+   "chg": 0
+  },
+  "Cloud Cutting Spoon": {
+   "rar": "Rare",
+   "atk": 1,
+   "dfs": 0,
+   "spd": 1,
+   "chg": 0
+  },
+  "Immortal Ladle": {
+   "rar": "Epic",
+   "atk": 1,
+   "dfs": 0,
+   "spd": 0,
+   "chg": 0
+  },
+  "Darkness Apron": {
+   "rar": "Epic",
+   "atk": 0,
+   "dfs": 6,
+   "spd": 0,
+   "chg": 1
+  },
+  "Infinity Gloves": {
+   "rar": "Epic",
+   "atk": 2,
+   "dfs": 0,
+   "spd": 1,
+   "chg": 0
+  },
+  "Bottomless Chef's Hat": {
+   "rar": "Epic",
+   "atk": 0,
+   "dfs": 0,
+   "spd": 2,
+   "chg": 2
+  },
+  "Miracle Knife": {
+   "rar": "Legend",
+   "atk": 2,
+   "dfs": 0,
+   "spd": 2,
+   "chg": 1
+  },
+  "⟨ex⟩ Twin Ladle": {
+   "rar": "Legend",
+   "atk": 0,
+   "dfs": 0,
+   "spd": 2,
+   "chg": 1
+  },
+  "Golden pan": {
+   "rar": "Legend",
+   "atk": 0,
+   "dfs": 0,
+   "spd": 0,
+   "chg": 0
+  },
+  "Surya Dough Kneader": {
+   "rar": "Legend",
+   "atk": 3,
+   "dfs": 0,
+   "spd": 2,
+   "chg": 0
+  },
+  "The Great Microwave": {
+   "rar": "Legend",
+   "atk": 3,
+   "dfs": 12,
+   "spd": 0,
+   "chg": 1
+  },
+  "Dragon Bone Ladle": {
+   "rar": "Mythic",
+   "atk": 4,
+   "dfs": 4,
+   "spd": 3,
+   "chg": 2
+  },
+  "Emperor Knife": {
+   "rar": "Mythic",
+   "atk": 4,
+   "dfs": 0,
+   "spd": 2,
+   "chg": 0
+  },
+  "Gaint Fork": {
+   "rar": "Mythic",
+   "atk": 6,
+   "dfs": 4,
+   "spd": 0,
+   "chg": 0
+  },
+  "Maid Apron": {
+   "rar": "Mythic",
+   "atk": 3,
+   "dfs": 5,
+   "spd": 0,
+   "chg": 1
+  },
+  "Peem": {
+   "rar": "Mythic",
+   "atk": 5,
+   "dfs": 5,
+   "spd": 1,
+   "chg": 2
+  },
+  "Cast Iron Lid": {
+   "rar": "Rare",
+   "atk": 2,
+   "dfs": 4,
+   "spd": 1,
+   "chg": 0
+  },
+  "Butcher Cleaver": {
+   "rar": "Legend",
+   "atk": 4,
+   "dfs": 3,
+   "spd": 2,
+   "chg": 0
+  },
+  "Titan Stone Mortar": {
+   "rar": "Mythic",
+   "atk": 5,
+   "dfs": 4,
+   "spd": 1,
+   "chg": 0
+  }
+ },
+ "results": {
+  "MONSTER_ORANGECAT": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 5,
+    "mhp": 0.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 20,
+    "php": 10,
+    "mhp": 0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 27,
+    "php": 0.0,
+    "mhp": 1.0
+   }
+  },
+  "MONSTER_ONPIRENION": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 9.0,
+    "mhp": -2.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 25,
+    "php": 10.0,
+    "mhp": -3.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 30,
+    "php": 10.0,
+    "mhp": 0.0
+   }
+  },
+  "MONSTER_MUSHROOMRAT": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 7.0,
+    "mhp": 0.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 25,
+    "php": 10.0,
+    "mhp": -1.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 45,
+    "php": 10.0,
+    "mhp": 0.0
+   }
+  },
+  "MONSTER_CABBAGEDOG": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 9,
+    "php": -3.0,
+    "mhp": 10
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 10,
+    "php": 8.0,
+    "mhp": 0.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 10,
+    "php": 0.0,
+    "mhp": 9
+   }
+  },
+  "MONSTER_CHERRYBIRD": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 8.0,
+    "mhp": -2
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 15,
+    "php": 10,
+    "mhp": -3.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 30,
+    "php": 5.0,
+    "mhp": 0.0
+   }
+  },
+  "MONSTER_PUDDINGCRAP": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 30,
+    "php": 10.0,
+    "mhp": -1.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 24,
+    "php": 10,
+    "mhp": 0.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 60,
+    "php": 10.0,
+    "mhp": 0.0
+   }
+  },
+  "MONSTER_SUGARTIGER": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 10,
+    "php": 0.0,
+    "mhp": 1
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 6,
+    "php": 9.0,
+    "mhp": -1.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 12,
+    "php": -3.0,
+    "mhp": 5
+   }
+  },
+  "MONSTER_SPICYHEDGEHOG": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 1.0,
+    "mhp": 0.0
+   },
+   "Rush-3": {
+    "win": "M",
+    "ticks": 13,
+    "php": 0.0,
+    "mhp": 3.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 20,
+    "php": 1.0,
+    "mhp": -1.0
+   }
+  },
+  "MONSTER_BLUEFIN": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 2.0,
+    "mhp": -2.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 13,
+    "php": 1.0,
+    "mhp": -3.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 20,
+    "php": 3.0,
+    "mhp": -6.0
+   }
+  },
+  "MONSTER_PIZZATURTLE": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 80,
+    "php": 2,
+    "mhp": 0.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 17,
+    "php": 8,
+    "mhp": -2.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 30,
+    "php": 10,
+    "mhp": -1.0
+   }
+  },
+  "MONSTER_DURAINBOMB": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 25,
+    "php": -2.0,
+    "mhp": 8.0
+   },
+   "Rush-3": {
+    "win": "M",
+    "ticks": 13,
+    "php": 0.0,
+    "mhp": 6.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 20,
+    "php": 4.0,
+    "mhp": -6.0
+   }
+  },
+  "MONSTER_CHIVE": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 7,
+    "php": -2.0,
+    "mhp": 6
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 4,
+    "php": 7,
+    "mhp": 0.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 7,
+    "php": -3.0,
+    "mhp": 5
+   }
+  },
+  "MONSTER_BROCOLION": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 13,
+    "php": -3.0,
+    "mhp": 2
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 7,
+    "php": 5.0,
+    "mhp": 0.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 13,
+    "php": -5.0,
+    "mhp": 8
+   }
+  },
+  "MONSTER_BANANAOCTOPUS": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 10,
+    "php": -4.0,
+    "mhp": 2
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 7,
+    "php": 4.0,
+    "mhp": 0.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 8,
+    "php": 0.0,
+    "mhp": 17
+   }
+  },
+  "MONSTER_UBEECORN": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 12,
+    "php": -1.0,
+    "mhp": 7.0
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 7,
+    "php": 4.0,
+    "mhp": -1.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 8,
+    "php": 0,
+    "mhp": 14
+   }
+  },
+  "MONSTER_MONKEYCUPSSPICES": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 14,
+    "php": -2.0,
+    "mhp": 5
+   },
+   "Rush-3": {
+    "win": "P",
+    "ticks": 15,
+    "php": 1.0,
+    "mhp": -1.0
+   },
+   "Bal-2": {
+    "win": "M",
+    "ticks": 15,
+    "php": -2.0,
+    "mhp": 16
+   }
+  },
+  "MONSTER_DEARBOKCHOY": {
+   "Heavy-1": {
+    "win": "P",
+    "ticks": 20,
+    "php": 1.0,
+    "mhp": 0.0
+   },
+   "Rush-3": {
+    "win": "M",
+    "ticks": 23,
+    "php": 0.0,
+    "mhp": 20.0
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 12,
+    "php": -1.0,
+    "mhp": 0.0
+   }
+  },
+  "MONSTER_JELLYUDON": {
+   "Heavy-1": {
+    "win": "M",
+    "ticks": 12,
+    "php": -1.0,
+    "mhp": 18
+   },
+   "Rush-3": {
+    "win": "M",
+    "ticks": 18,
+    "php": -1.0,
+    "mhp": 26
+   },
+   "Bal-2": {
+    "win": "P",
+    "ticks": 12,
+    "php": 2.0,
+    "mhp": 0.0
+   }
+  }
+ }
+}

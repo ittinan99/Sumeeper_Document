@@ -236,7 +236,7 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 - การกระทำแต่ละครั้งใน sequence เรียกว่า action โดย 1 action = การโจมตี 1 ครั้ง
 - ฝั่งผู้เล่น : sequence มาจาก Equipment ที่ถูกเลือกใน Pre-Combat — แต่ละ action คือการโจมตีด้วย Equipment ชิ้นนั้น (หากไม่เลือก Equipment เลย sequence = โจมตีด้วย base stat ล้วน)
 - **กติกากลาง (ใช้ทั้งสองฝั่ง)** : ค่าที่ใช้จริงของทุก action = **base stat ของตัวละคร + stat ของ action นั้น** ทั้ง ATK, SPD และ Charge (บวกกันเสมอ ไม่มีการแทนที่) — base แต่ละค่าไม่ต่ำกว่า 1 จึงไม่มี action ที่ตีแล้วไม่เกิดผล และไม่มี action ที่ค้างไม่มาถึง
-- ฝั่ง Feast : sequence มาจากตัว Feast เอง อิงตาม Tier (ดูหัวข้อ Feast Sequence) และเดินทีละ action ด้วยกติกาเดียวกัน — Feast มี SPD ค่าเดียวทั้งตัว จึงใช้ค่านั้นเป็นอัตราเติมของทุก action
+- ฝั่ง Feast : sequence มาจากตัว Feast เอง อิงตาม Tier (ดูหัวข้อ Feast Sequence) และเดินทีละ action ด้วยกติกาเดียวกัน — **SPD ของแต่ละ action = base SPD ของตัว (Monsters Config) + SPD ของ action นั้น (Feast Sequence)** เหมือนฝั่งผู้เล่นทุกประการ ส่วน ATK/Charge ราย action ใช้ค่าในชีต Feast Sequence ตรงๆ (เป็นค่าจบแล้ว ไม่บวก base — คอลัมน์ ATK ใน Monsters Config เป็นค่า legacy ไม่ถูกใช้) และหลอด DEF = base DEF + Σ DEF ของทุก action ใน sequence
 - ผลเชิงออกแบบ : จำนวนชิ้นใน loadout **ไม่ได้เพิ่มความถี่การโจมตี** — ถือ 3 ชิ้นได้ความหลากหลาย (ability, DEF รวม, burst ใหญ่) ไม่ใช่ตีถี่ขึ้น 3 เท่า ส่วน build ชิ้นเดียวหมุนอาวุธชิ้นเดิมซ้ำทุก action
 - ทุก action นับเป็นการโจมตี — trigger On-Hit ของผู้กระทำ และ On-Damaged ของผู้ถูกกระทำ ตามปกติ
 
