@@ -16,7 +16,7 @@ Key systems to know before touching anything:
 
 - **Combat is watch-only auto-battle.** All decisions happen in Pre-Combat (choosing 0–3 equipment as an ordered Action Sequence); the fight then resolves automatically. No mid-combat input, so combat must never stall.
 - **No leveling.** Player power comes only from Equipment, Perks, and Recipes (Max HP). Character base stats are fixed per run (starter: HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2) and modified only by Perks.
-- **Gluttony Gauge** replaces XP: earned by killing Feast, and at thresholds the player must pick 1 of 2 **Curses**. Accepted curses scale Feast up in real time (ATK/HP % per curse, +1 sequence action per 2 curses) — risk-vs-reward pacing knob.
+- **Curse Gauge** replaces XP: earned by killing Feast, and at thresholds the player must pick 1 of 2 **Curses**. Accepted curses scale Feast up in real time (ATK/HP % per curse, +1 sequence action per 2 curses) — risk-vs-reward pacing knob.
 - **Cooking**: ingredients found in the dungeon combine into **Meals** (buffs/effects; Recipes are the only Max HP source).
 - **Encounters** on the grid: Combat, Shop, Forge (upgrade/merge equipment rarity), Perk, Item, Hint.
 - **Run structure**: floors with themed variants (Myceland, Sugar Garden, Abyssalt, Capsaicia, Umamia, Edemia), currencies (Coin, Fath, Special Ingredients from bosses), Quests, and The Curse Contract.
@@ -25,7 +25,8 @@ Key systems to know before touching anything:
 
 | Topic | Source of truth |
 | --- | --- |
-| All game rules & systems (canonical) | `game_document/Sumeeper_GDD.md` — sections: Core Mechanics (Grid, Stat) · Encounter (Combat/Shop/Forge/Perk/Item/Hint) · Combat + Auto battle + Damage Calculate · Feature (Feast, Feast Sequence, Ability, Trigger/Keyword) · Gluttony Gauge · Cook · Equipment (Tier, Set) · Perk · Curse · Core gameloop (Run, Currency, Quest, Reward, Curse Contract) · Character · Floor Variant |
+| All game rules & systems (canonical) | `game_document/Sumeeper_GDD.md` — sections: Core Mechanics (Grid, Stat) · Encounter (Combat/Shop/Forge/Perk/Item/Hint) · Combat + Auto battle + Damage Calculate · Feature (Feast, Feast Sequence, Ability, Trigger/Keyword) · Curse Gauge · Cook · Equipment (Tier, Set) · Perk · Curse · Core gameloop (Run, Currency, Quest, Reward, Curse Contract) · Character · Floor Variant |
+| UI/UX per screen — สิ่งที่ต้องแสดง + สิ่งที่กดได้ (ไม่ใช่ rule) | `game_document/Sumeeper_UX_Screens.md` — ตอนนี้ครอบคลุมกลุ่มหน้า Result; ถ้าขัดกับ GDD ให้ยึด GDD |
 | Weapon stats, abilities, tuning weights, CP budget, rarity pools, forge scaling | `game_document/Sumeeper_Equipment_Sheet.xlsx` |
 | Feast (monster) stats & action sequences & abilities | `game_document/Sumeeper_Monster_Sheet.xlsx` |
 | Curses | `game_document/Sumeeper_Curse_Sheet.xlsx` |
