@@ -99,7 +99,7 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
     - ค่าพลังโจมตี(ATK) : เป็นตัวเลขบอกถึงค่าพลังโจมตี — ฝั่งผู้เล่นแสดงตาม Equipment ชิ้นที่กำลังจะออก action คล้ายภาพ Combat02
     - ค่าป้องกัน(DEF) : เป็น slide bar ซ้อนอยู่ชั้นหน้าหลอด HP ซึ่งบอกถึงค่าป้องกันที่เหลืออยู่ — ลดลงเมื่อถูกโจมตี และเติมเต็มใหม่ทุกครั้งที่เริ่ม combat
     - ค่าความเร็ว(SPD) : เป็น slide bar ซึ่งบอกถึงค่าความเร็วที่มีอยู่คล้ายภาพ Combat02
-    - หลอด Special (Action Gauge) : เป็น slide bar แบบเป็นช่อง ซึ่งบอกถึงเวลาที่ Special จะเกิดขึ้น ทำงานคล้ายภาพ Combat01-B แต่มีการแบ่งช่องแบบ Combat01-B
+    - Special Gauge (หลอด Special) : เป็น slide bar แบบเป็นช่อง ซึ่งบอกถึงเวลาที่ Special จะเกิดขึ้น ทำงานคล้ายภาพ Combat01-B แต่มีการแบ่งช่องแบบ Combat01-B
     - หลอดความเร็ว(Speed Gauge) : เป็น slide bar ซึ่งค่าภายในจะเพิ่มขึ้นเรื่อยๆ สอดคล้องกับความเร็วของผู้เล่นทำงานแบบภาพ Combat01-B
 - มีปุ่มที่ผู้เล่นสามารถกดเพื่อจัดการการ Pre-Combat ได้แก่
     - retreat : เมื่อกดจะเป็นการหลบหนีจากศัตรู
@@ -243,10 +243,10 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 - ผลเชิงออกแบบ : จำนวนชิ้นใน loadout **ไม่ได้เพิ่มความถี่การโจมตี** — ถือ 3 ชิ้นได้ความหลากหลาย (ability, DEF รวม, burst ใหญ่) ไม่ใช่ตีถี่ขึ้น 3 เท่า ส่วน build ชิ้นเดียวหมุนอาวุธชิ้นเดิมซ้ำทุก action
 - ทุก action นับเป็นการโจมตี — trigger On-Hit ของผู้กระทำ และ On-Damaged ของผู้ถูกกระทำ ตามปกติ
 
-### **Action Gauge (หลอด Special) :**
+### **Special Gauge :**
 
 - Gauge นี้จะถูกแบ่งเป็นช่อง โดยจำนวนช่องสูงสุด (Max) เป็นค่าคงที่อิงจากตัวละคร และเปลี่ยนแปลงได้ด้วย Perk — ไม่ผันผวนตาม loadout
-- ทุกครั้งที่ออก action, Action Gauge จะเพิ่มขึ้น = base Charge ของตัวละคร + ค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet — กติกา base + stat เดียวกับ ATK/SPD)
+- ทุกครั้งที่ออก action, Special Gauge จะเพิ่มขึ้น = base Charge ของตัวละคร + ค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet — กติกา base + stat เดียวกับ ATK/SPD)
 - เมื่อทุกช่องใน Gauge นี้เต็ม ผู้กระทำจะใช้งาน Special
 - เมื่อเต็มแล้ว Gauge จะรีเซ็ตให้ทุกช่องกลับมาว่าง — Charge ส่วนที่เกินจากจุดเต็มจะถูกทิ้ง ไม่ทบข้ามรอบ
 
@@ -261,7 +261,7 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 - Value ของ Gauge นี้จะเพิ่มเรื่อยๆ ด้วยอัตรา = base SPD + SPD ของชิ้นที่ active (ชิ้นถัดไปที่จะออก action) — เปลี่ยนชิ้น active อัตราก็เปลี่ยนตาม
 - **อัตราเติมขั้นต่ำ 1 เสมอ** — ต่อให้ SPD ติดลบจาก stat หรือ debuff ก็ตาม เพื่อการันตีว่าทุก action มาถึงแน่นอน rotation ไม่มีทางค้าง (เกมเป็น watch-only ห้ามมี state ที่ไม่เดินหน้า)
 - เมื่อ Gauge นี้เต็ม ชิ้นที่ active จะออก action 1 ครั้ง แล้วลำดับเลื่อนไปชิ้นถัดไปใน sequence
-- เมื่อเต็มแล้ว หักค่าเต็มออกจาก value — **เศษความเร็วที่เกินทบไปรอบถัดไป** (ต่างจาก Action Gauge ที่ทิ้งส่วนเกิน) เพื่อให้ความต่างของ SPD ยังมีผลจริงแม้ค่าจะสูงจนเกือบออก action ได้ทุก tick
+- เมื่อเต็มแล้ว หักค่าเต็มออกจาก value — **เศษความเร็วที่เกินทบไปรอบถัดไป** (ต่างจาก Special Gauge ที่ทิ้งส่วนเกิน) เพื่อให้ความต่างของ SPD ยังมีผลจริงแม้ค่าจะสูงจนเกือบออก action ได้ทุก tick
 
 ### **Damage Calculate (การคำนวนความเสียหาย)**
 
@@ -353,7 +353,7 @@ Ability ทุกตัวในเกมเขียนภายใต้รู
     - **On-Half :** ทำงานเมื่อเจ้าของ Ability พลังชีวิตต่ำกว่าครึ่งหนึ่งเป็นครั้งแรกในการต่อสู้
     - **On-Exposed** : ทำงานเมื่อค่า DEF ของเจ้าของ Ability เปลี่ยนจากมากกว่า 0 เป็น 0 ครั้งแรกในการต่อสู้ — คือจังหวะที่หลอด DEF ถูกกินจนหมดและความเสียหายเริ่มทะลุเข้า HP (หากเข้า combat ด้วย DEF 0 อยู่แล้ว จะไม่ trigger ตลอดการต่อสู้นั้น)
     - **On-Full** : ทำงานเมื่อเจ้าของ Ability มีค่า HP เท่ากับ max HP
-    - **Special** (ชื่อเดิม: On-Action) : ทำงานเมื่อ Action Gauge ของเจ้าของ Ability เต็ม
+    - **Special** (ชื่อเดิม: On-Action) : ทำงานเมื่อ Special Gauge ของเจ้าของ Ability เต็ม
 
 #### **Verb (กริยา) :**
 
@@ -630,7 +630,7 @@ Curse เป็นผลเสียที่จะส่งผลต่อผ�
 
 # **Character :**
 
-> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Action Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2** (base ATK/SPD/Charge ถูก**บวก**เข้ากับค่าของชิ้นที่ออก action ทุกครั้ง — การอัปเกรด base stat จึงส่งผลกับทุก action ของทุก loadout) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
+> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Special Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Special Gauge 2** (base ATK/SPD/Charge ถูก**บวก**เข้ากับค่าของชิ้นที่ออก action ทุกครั้ง — การอัปเกรด base stat จึงส่งผลกับทุก action ของทุก loadout) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
 > 
 
 # **Floor Variant :**

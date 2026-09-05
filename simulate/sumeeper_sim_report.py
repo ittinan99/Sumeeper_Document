@@ -298,7 +298,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       <div class="lgroup" id="vseqM"></div>
     </div>
   </div>
-  <div class="note">เลขใหญ่ = HP · ป้ายโล่ = หลอด DEF ที่เหลือ (รับดาเมจก่อน HP) · ช่องเหลือง = Action Gauge เต็มแล้วออก Special · เส้นบางล่าง = Speed Gauge (เติมด้วย SPD ของชิ้นที่ยกขึ้น) · การ์ดล่างซ้าย = sequence ผู้เล่น (ป้ายทอง ATK / ป้ายฟ้า Charge ค่าจริงราย action) ขวา = ของมอนสเตอร์</div>
+  <div class="note">เลขใหญ่ = HP · ป้ายโล่ = หลอด DEF ที่เหลือ (รับดาเมจก่อน HP) · ช่องเหลือง = Special Gauge เต็มแล้วออก Special · เส้นบางล่าง = Speed Gauge (เติมด้วย SPD ของชิ้นที่ยกขึ้น) · การ์ดล่างซ้าย = sequence ผู้เล่น (ป้ายทอง ATK / ป้ายฟ้า Charge ค่าจริงราย action) ขวา = ของมอนสเตอร์</div>
 </div>
 <div class="card" id="sandbox">
   <h2>Loadout</h2>
@@ -459,9 +459,9 @@ Object.values(SIM.monsters).forEach(m => { m.abil.forEach(a => a.__id = ++__aid)
   m.seq.forEach(e => e.abil.forEach(a => a.__id = ++__aid)); });
 const r1 = v => Math.round(v * 10) / 10;
 
-function mkEnt(name, hp, dfs, maxag) {
-  return { name, hp, maxhp: hp, dfs, maxag, spd: 0, atk_bonus: 0, thorn: 0, armor: 0,
-           sgauge: 0, agauge: 0, seq_idx: 0, fired: new Set(), specials: 0,
+function mkEnt(name, hp, dfs, maxsg) {
+  return { name, hp, maxhp: hp, dfs, maxsg, spd: 0, atk_bonus: 0, thorn: 0, armor: 0,
+           sgauge: 0, specgauge: 0, seq_idx: 0, fired: new Set(), specials: 0,
            sequence: [], abilities: [], cur_abil: [], burst_atk: 0 };
 }
 
@@ -471,14 +471,14 @@ function runFight(loadoutNames, mkey, wantRec) {
   let curT = 0;
   const m = SIM.monsters[mkey], P = SIM.player;
   const pw = loadoutNames.map(n => SIM.weapons[n]);
-  const p = mkEnt("player", P.hp, P.dfs + pw.reduce((s, w) => s + w.dfs, 0), P.maxag);
+  const p = mkEnt("player", P.hp, P.dfs + pw.reduce((s, w) => s + w.dfs, 0), P.maxsg);
   p.sequence = pw.length
     ? pw.map(w => ({ atk: P.atk + w.atk, spd: P.spd + w.spd, chg: P.chg + w.chg,
                      abil: w.abil.filter(a => a.lane === "Action") }))
     : [{ atk: P.atk, spd: P.spd, chg: P.chg, abil: [] }];
   p.abilities = pw.flatMap(w => w.abil.filter(a => a.lane !== "Action"));
   p.burst_atk = p.sequence.reduce((s, e) => s + e.atk, 0);
-  const e = mkEnt(m.name, m.hp, m.dfs, m.maxag);
+  const e = mkEnt(m.name, m.hp, m.dfs, m.maxsg);
   e.sequence = m.seq.map(x => ({ ...x, spd: m.base_spd + x.spd }));  // per-action SPD = base + entry (same rule as player)
   e.abilities = m.abil;
   p.cur_abil = p.abilities; e.cur_abil = e.abilities;
@@ -549,8 +549,8 @@ function runFight(loadoutNames, mkey, wantRec) {
     ent.cur_abil = ent.abilities.concat(entry.abil || []);
     const d = hitE(ent, foe, entry.atk + ent.atk_bonus);
     if (REC) REC.evs.push({ t, kind: "hit", side: sideOf(ent), idx: myIdx, dmg: d });
-    ent.agauge += entry.chg;
-    if (ent.agauge >= ent.maxag && foe.hp > 0 && ent.hp > 0) { ent.agauge = 0; doSpecial(ent, foe, t); }
+    ent.specgauge += entry.chg;
+    if (ent.specgauge >= ent.maxsg && foe.hp > 0 && ent.hp > 0) { ent.specgauge = 0; doSpecial(ent, foe, t); }
     ent.cur_abil = ent.abilities;
   }
 
@@ -560,8 +560,8 @@ function runFight(loadoutNames, mkey, wantRec) {
   const history = [[0, p.hp, p.dfs, e.hp, e.dfs]];
   const snap = () => {
     history.push([t, r1(p.hp), r1(p.dfs), r1(e.hp), r1(e.dfs)]);
-    if (REC) REC.snaps.push([t, r1(p.hp), r1(p.dfs), r1(p.sgauge), p.agauge, p.seq_idx,
-                             r1(e.hp), r1(e.dfs), r1(e.sgauge), e.agauge, e.seq_idx]);
+    if (REC) REC.snaps.push([t, r1(p.hp), r1(p.dfs), r1(p.sgauge), p.specgauge, p.seq_idx,
+                             r1(e.hp), r1(e.dfs), r1(e.sgauge), e.specgauge, e.seq_idx]);
   };
   if (REC) REC.snaps.push([0, p.hp, p.dfs, 0, 0, 0, e.hp, e.dfs, 0, 0, 0]);
   while (t < SIM.tickLimit && p.hp > 0 && e.hp > 0) {
@@ -600,7 +600,7 @@ function viewerLoad(weapons, mkey, label) {
   const m = SIM.monsters[mkey];
   V.rec = r.rec;
   V.meta = { weapons, mkey, label, win: r.win, ticks: r.ticks,
-    pmax: r.pmaxhp, mmax: r.mmaxhp, pagmax: SIM.player.maxag, magmax: m.maxag,
+    pmax: r.pmaxhp, mmax: r.mmaxhp, pagmax: SIM.player.maxsg, magmax: m.maxsg,
     pdefmax: Math.max(1, ...V.rec.snaps.map(s => s[2])), mdefmax: Math.max(1, ...V.rec.snaps.map(s => s[7])),
     pseq: weapons.length ? weapons : ["Base"], mseq: m.seq.map((x, i) => `A${i+1}·${x.atk}`),
     mname: m.name };
@@ -778,7 +778,7 @@ function renderStats() {
     : `ATK ${P.atk} · SPD ${P.spd} · Chg ${P.chg}`;
   const burst = pw.length ? pw.reduce((s, w) => s + P.atk + w.atk, 0) : P.atk;
   $("#sbStats").textContent =
-    `ค่าจริงราย action (base+ชิ้น): ${per}   |   หลอด DEF รวม ${defSum} · Special burst ${burst} · HP ${P.hp} · MaxAG ${P.maxag}`;
+    `ค่าจริงราย action (base+ชิ้น): ${per}   |   หลอด DEF รวม ${defSum} · Special burst ${burst} · HP ${P.hp} · MaxSG ${P.maxsg}`;
 }
 function runSandbox() {
   lastView = "sandbox"; selected = null;

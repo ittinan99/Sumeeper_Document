@@ -15,7 +15,7 @@ A **Minesweeper-style tile-puzzle roguelite** crossed with a deckbuilding auto-b
 Key systems to know before touching anything:
 
 - **Combat is watch-only auto-battle.** All decisions happen in Pre-Combat (choosing 0–3 equipment as an ordered Action Sequence); the fight then resolves automatically. No mid-combat input, so combat must never stall.
-- **No leveling.** Player power comes only from Equipment, Perks, and Recipes (Max HP). Character base stats are fixed per run (starter: HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2) and modified only by Perks.
+- **No leveling.** Player power comes only from Equipment, Perks, and Recipes (Max HP). Character base stats are fixed per run (starter: HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Special Gauge 2) and modified only by Perks.
 - **Curse Gauge** replaces XP: earned by killing Feast, and at thresholds the player must pick 1 of 2 **Curses**. Accepted curses scale Feast up in real time (ATK/HP % per curse, +1 sequence action per 2 curses) — risk-vs-reward pacing knob.
 - **Cooking**: ingredients found in the dungeon combine into **Meals** (buffs/effects; Recipes are the only Max HP source).
 - **Encounters** on the grid: Combat, Shop, Forge (upgrade/merge equipment rarity), Perk, Item, Hint.
