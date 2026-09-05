@@ -32,6 +32,9 @@ Key systems to know before touching anything:
 | Curses | `game_document/Sumeeper_Curse_Sheet.xlsx` |
 | Meals / cooking | `game_document/Sumeeper_Meal_Sheet.xlsx` |
 | Perks | `game_document/Sumeeper_Perk_Sheet.xlsx` |
+| **Values Unity actually loads** (all configs, 18 tabs) | Google Sheet `Sumeeper_GameData` — offline mirror `game_document/Sumeeper_GameData.xlsx`. The design sheets above are intent; this is what ships. |
+| How to read/write that sheet, the localization sheet, and Unity's Pull/Push | `game_document/Sumeeper_GameData_Sync_Guide.md` — **read before touching any sheet**; tool: `simulate/tools/gsheet.py` |
+| Balance proposals awaiting a human decision | `game_document/proposals/` |
 | Old versions of everything | `backup/` — **read-only history**; never edit, never treat as current |
 
 The GDD is canonical. When it disagrees with a sheet or the sim, flag the drift instead of guessing.

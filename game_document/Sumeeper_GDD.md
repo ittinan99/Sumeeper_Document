@@ -252,9 +252,39 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 
 ### **Special (ท่าพิเศษ)**
 
-- Special คือชื่อใหม่ของ trigger เดิม "On-Action" — ความสามารถทั้งหมดที่เคยอ้างอิง On-Action ให้ทำงานตอน Special แทน (logic เดิมทั้งหมด เปลี่ยนเฉพาะชื่อ)
+- **Special ไม่ใช่ชื่อใหม่ของ On-Action** (GDD เคยระบุแบบนั้น — ตกยุคแล้ว) : engine แยกเป็นสอง trigger คนละตัวคือ `OnAction` และ `OnSpecial` ทั้งคู่อ่าน ability จาก action ชิ้นเดียวกันในลำดับ ต่างกันแค่จังหวะ และในหนึ่ง tick ทำงานได้อย่างใดอย่างหนึ่งเท่านั้น — ดูหัวข้อ *On-Action vs On-Hit vs Special*
 - Special พื้นฐานของผู้เล่นคือการโจมตี burst : ความเสียหาย = ผลรวม ATK ราย action ของทุกชิ้นใน loadout (แต่ละชิ้นคิด base ATK + ATK ของชิ้นนั้น) นับเป็นการโจมตี 1 ครั้ง — โดน Armor หักครั้งเดียว ติด Damage Floor 1 และกินหลอด DEF ก่อนตามปกติ — Primary Perk บางสายจะ Replaces Special (เช่น Duelist, Alchemist, Devourer) ตาม perk sheet
 - Feast ส่วนใหญ่มี Special ของตัวเอง โดยนำ ability สาย active/offensive เดิม (On-Start/On-Hit ที่เป็นการบัฟตัวเอง ตีแรงพิเศษ หรือ debuff ผู้เล่น) มาปรับให้ทำงานตอน Special แทน ส่วน ability สาย reactive (On-Damaged, On-Exposed, On-Half) คงเป็น trigger เดิม
+
+### **On-Action vs On-Hit vs Special (สาม trigger ที่คนสับสนบ่อย)**
+
+ทั้งสามผูกกับ **action เดียวกัน** คือชิ้นที่ active อยู่ใน sequence ต่างกันที่ตำแหน่งในลำดับการทำงานของ tick นั้น:
+
+```
+Speed Gauge เต็ม → ชิ้นที่ active ออก action
+  ├─ On-Action     ← ตัดสินว่า action นี้จะโจมตีหรือทำอย่างอื่น (ทำงานก่อนดาเมจ)
+  │    └─ โจมตี → On-Hit ของผู้กระทำ + On-Damaged ของผู้ถูกกระทำ
+  └─ ถ้า tick นี้ Special Gauge เต็ม → Special แทน (On-Action ไม่ทำงาน)
+```
+
+| Trigger | จังหวะ | บทบาท |
+| --- | --- | --- |
+| **On-Action** | tick ปกติ ก่อนการโจมตี | **แทนที่**การโจมตีได้ — ถ้า ability ที่ผูกไว้ไม่ใช่การทำดาเมจ action นั้นจะไม่โจมตี |
+| **On-Hit** | หลังการโจมตีเกิดขึ้นจริง | **พ่วงท้าย**การโจมตี ไม่มีผลว่าจะโจมตีหรือไม่ · ยิงซ้ำได้ตามจำนวนช่อง gauge ถ้ามี Perk สาย Full Force · การตีเสริมจาก Perk (Duelist, Combo Strike) ก็นับเป็น On-Hit |
+| **Special** | tick ที่ Special Gauge เต็ม | พ่วงท้ายการโจมตีเช่นกัน แต่เฉพาะ tick นั้น — tick ที่เป็น Special จะ**ไม่**ทำงาน On-Action |
+
+- **หนึ่ง tick เป็นได้อย่างเดียว** — เป็น Special แล้วจะไม่ใช่ On-Action ไม่ใช่ทำงานทั้งคู่ซ้อนกัน
+- ถ้า action นั้นถูกหลบ (dodge) ไม่มี trigger ตัวไหนทำงานเลย
+- **ข้อยกเว้นเดียว — Perk สาย Protector** : tick ที่ควรเป็น Special จะถูกกด หลอดค้างเต็มไว้ ไม่รีเซ็ต ไม่ออก Special และ tick นั้นไหลกลับไปเป็น action ปกติ (ตัวสวนกลับไปเกิดตอนผู้เล่นโดนตีแทน)
+
+#### **สถานะการใช้งานจริงของ On-Action (ณ 2026-09-05)**
+
+ตาม*กติกากลาง*ในหัวข้อ Action Sequence ทุก action **โจมตีเสมอ** (base stat ไม่ต่ำกว่า 1) ดังนั้นความสามารถ "On-Action แทนที่การโจมตี" ที่ engine รองรับ **ไม่ถูกใช้ในดีไซน์นี้** และข้อมูลปัจจุบันก็สะท้อนแบบนั้น:
+
+- อาวุธที่มี ability สาย On-Action มี 35 ชิ้น **เป็นของ Feast ทั้งหมด ไม่มีของผู้เล่นเลย** และทุกชิ้นมี ability ทำดาเมจกำกับอยู่ด้วยเสมอ → ผลลัพธ์เท่ากับไม่ได้ใส่ On-Action
+- ผลข้างเคียง: ability สาย On-Action ที่ไม่ใช่การทำดาเมจ (Gain/Restore) **ไม่เคยทำงานเลย** เพราะถูกทางที่โจมตีบังไว้ — ค้างรอตัดสินว่าจะย้ายไป On-Hit (ตีแล้วได้ผล) หรือ Special (ตอนหลอดเต็ม)
+- ⇒ **สรุป: On-Action มีอยู่ใน engine แต่ยังไม่มีผลกับเกม** ถ้ายืนกติกา "ตีเสมอ" ต่อไป ควรยุบข้อมูลสาย On-Action ทิ้งทั้งหมด และเก็บ trigger ไว้เฉย ๆ (ลบ enum ไม่ได้ เพราะ asset เก็บเป็น index)
+- sim ใน `simulate/` จำลองตามกติกา "ตีเสมอ" อยู่แล้ว จึงไม่จำลอง On-Action — ถ้าวันไหนตัดสินใจให้ On-Action แทนที่การโจมตีได้จริง ต้องแก้ทั้ง GDD และ sim engine ทั้งสองตัวพร้อมกัน
 
 ### **Speed Gauge (หลอดความเร็ว)**
 
@@ -329,7 +359,7 @@ Ability ทุกตัวในเกมเขียนภายใต้รู
 
 #### **องค์ประกอบของ Ability :**
 
-- **Trigger (จังหวะทำงาน)** : จังหวะที่ Ability ทำงาน — Passive, On-Start, Battlecry, On-Hit, On-Damaged, On-Half, On-Exposed, Death, Special
+- **Trigger (จังหวะทำงาน)** : จังหวะที่ Ability ทำงาน — Passive, On-Start, Battlecry, On-Hit, On-Damaged, On-Half, On-Exposed, Death, On-Action, Special
 - **Verb (กริยา)** : การกระทำของผล เป็นชุดปิด 5 คำ — Gain, Lose, Convert, Restore, Eater
 - **Magnitude (ขนาดของผล)** : *(ชื่อเดิม: Intensity)* ตัวเลขบอกขนาด ตีความตามเป้า — ถ้าเป้าเป็น Stat หรือ Combat Keyword ตัวเลขคือจำนวน/stack, ถ้าเป้าเป็น Grid Keyword ตัวเลขคือ **Range** (จำนวนช่องรอบตัวเจ้าของ Ability)
 - **Target (เป้าของผล)** : สิ่งที่ถูกกระทำ — เป็นได้ทั้งค่าพลังพื้นฐาน (HP, ATK, DEF, SPD) และ Keyword (Thorn, Armor, Fury, Taunt, Freezer)
@@ -353,7 +383,8 @@ Ability ทุกตัวในเกมเขียนภายใต้รู
     - **On-Half :** ทำงานเมื่อเจ้าของ Ability พลังชีวิตต่ำกว่าครึ่งหนึ่งเป็นครั้งแรกในการต่อสู้
     - **On-Exposed** : ทำงานเมื่อค่า DEF ของเจ้าของ Ability เปลี่ยนจากมากกว่า 0 เป็น 0 ครั้งแรกในการต่อสู้ — คือจังหวะที่หลอด DEF ถูกกินจนหมดและความเสียหายเริ่มทะลุเข้า HP (หากเข้า combat ด้วย DEF 0 อยู่แล้ว จะไม่ trigger ตลอดการต่อสู้นั้น)
     - **On-Full** : ทำงานเมื่อเจ้าของ Ability มีค่า HP เท่ากับ max HP
-    - **Special** (ชื่อเดิม: On-Action) : ทำงานเมื่อ Special Gauge ของเจ้าของ Ability เต็ม
+    - **On-Action** : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ปกติ (Special Gauge ยังไม่เต็ม) — ทำงาน**ก่อน**การโจมตี ไม่ใช่หลัง ดูหัวข้อ *On-Action vs On-Hit vs Special*
+    - **Special** *(engine เรียก `OnSpecial`)* : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ที่ Special Gauge เต็ม — **เป็นคนละ trigger กับ On-Action ไม่ใช่ชื่อใหม่ของ On-Action**
 
 #### **Verb (กริยา) :**
 

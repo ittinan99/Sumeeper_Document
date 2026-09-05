@@ -72,6 +72,7 @@
 ### Trigger / Keyword / Special
 
 - Trigger: **On-Start** (เริ่ม combat) / **On-Hit** (ผู้ตี ทุก action) / **On-Damaged** (ผู้ถูกตี ทุกครั้งที่โดน) / **On-Half** (ครั้งเดียว เมื่อ HP ตกถึงครึ่ง) / **On-Exposed** (ครั้งเดียว เฉพาะเมื่อ DEF เปลี่ยนจาก >0 เป็น 0 — เริ่ม combat ที่ 0 อยู่แล้วไม่ยิงตลอดไฟต์) / **Special** / Death / Passive
+- **ไม่จำลอง On-Action** — engine ของเกมมี trigger นี้แยกจาก Special (ยิงตอน tick ปกติ ก่อนดาเมจ และแทนที่การโจมตีได้) แต่ดีไซน์ยืนกติกา "ทุก action โจมตีเสมอ" และไม่มีข้อมูลชิ้นไหนใช้ทางแทนที่จริง sim จึงตีทุก tick ตรงตามกติกา — ดูหัวข้อ *On-Action vs On-Hit vs Special* ใน GDD ถ้าวันไหนกติกาเปลี่ยน ต้องแก้ engine ทั้งสองตัวพร้อม GDD
 - "Shield" เป็นคำเก่า = **Armor**; **Fury** นิยามไว้ใน GDD แต่ยังไม่มีของชิ้นไหนใช้และ sim ยังไม่รองรับ
 - Special Gauge มี MaxSG ช่อง (คงที่ต่อตัวละคร ขยับด้วย Perk ไม่ผันตาม loadout) — เต็มแล้วใช้ Special ทันที รีเซ็ตเป็น 0 ทิ้ง Charge ส่วนเกิน
 - Special พื้นฐานของผู้เล่น = **burst โจมตี 1 ครั้ง** ค่า = Σ ATK ราย action ของทุกชิ้นใน loadout — โดน Armor หักครั้งเดียว ติด floor 1 กินหลอด DEF ตามปกติ; Primary Perk บางสาย Replaces Special; Feast ส่วนใหญ่มี Special ของตัวเอง
