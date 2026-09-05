@@ -99,7 +99,7 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
     - ค่าพลังโจมตี(ATK) : เป็นตัวเลขบอกถึงค่าพลังโจมตี — ฝั่งผู้เล่นแสดงตาม Equipment ชิ้นที่กำลังจะออก action คล้ายภาพ Combat02
     - ค่าป้องกัน(DEF) : เป็น slide bar ซ้อนอยู่ชั้นหน้าหลอด HP ซึ่งบอกถึงค่าป้องกันที่เหลืออยู่ — ลดลงเมื่อถูกโจมตี และเติมเต็มใหม่ทุกครั้งที่เริ่ม combat
     - ค่าความเร็ว(SPD) : เป็น slide bar ซึ่งบอกถึงค่าความเร็วที่มีอยู่คล้ายภาพ Combat02
-    - Special Gauge (หลอด Special) : เป็น slide bar แบบเป็นช่อง ซึ่งบอกถึงเวลาที่ Special จะเกิดขึ้น ทำงานคล้ายภาพ Combat01-B แต่มีการแบ่งช่องแบบ Combat01-B
+    - Action Gauge (หลอด Special) : เป็น slide bar แบบเป็นช่อง ซึ่งบอกถึงเวลาที่ Special จะเกิดขึ้น ทำงานคล้ายภาพ Combat01-B แต่มีการแบ่งช่องแบบ Combat01-B
     - หลอดความเร็ว(Speed Gauge) : เป็น slide bar ซึ่งค่าภายในจะเพิ่มขึ้นเรื่อยๆ สอดคล้องกับความเร็วของผู้เล่นทำงานแบบภาพ Combat01-B
 - มีปุ่มที่ผู้เล่นสามารถกดเพื่อจัดการการ Pre-Combat ได้แก่
     - retreat : เมื่อกดจะเป็นการหลบหนีจากศัตรู
@@ -243,20 +243,24 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 - ผลเชิงออกแบบ : จำนวนชิ้นใน loadout **ไม่ได้เพิ่มความถี่การโจมตี** — ถือ 3 ชิ้นได้ความหลากหลาย (ability, DEF รวม, burst ใหญ่) ไม่ใช่ตีถี่ขึ้น 3 เท่า ส่วน build ชิ้นเดียวหมุนอาวุธชิ้นเดิมซ้ำทุก action
 - ทุก action นับเป็นการโจมตี — trigger On-Hit ของผู้กระทำ และ On-Damaged ของผู้ถูกกระทำ ตามปกติ
 
-### **Special Gauge :**
+### **Action Gauge :**
 
 - Gauge นี้จะถูกแบ่งเป็นช่อง โดยจำนวนช่องสูงสุด (Max) เป็นค่าคงที่อิงจากตัวละคร และเปลี่ยนแปลงได้ด้วย Perk — ไม่ผันผวนตาม loadout
-- ทุกครั้งที่ออก action, Special Gauge จะเพิ่มขึ้น = base Charge ของตัวละคร + ค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet — กติกา base + stat เดียวกับ ATK/SPD)
+- ทุกครั้งที่ออก action, Action Gauge จะเพิ่มขึ้น = base Charge ของตัวละคร + ค่า Charge ของ Equipment ชิ้นที่ออก action นั้น (ค่า Charge รายชิ้นอิงตาม equipment sheet — กติกา base + stat เดียวกับ ATK/SPD)
 - เมื่อทุกช่องใน Gauge นี้เต็ม ผู้กระทำจะใช้งาน Special
 - เมื่อเต็มแล้ว Gauge จะรีเซ็ตให้ทุกช่องกลับมาว่าง — Charge ส่วนที่เกินจากจุดเต็มจะถูกทิ้ง ไม่ทบข้ามรอบ
 
 ### **Special (ท่าพิเศษ)**
 
-- **Special ไม่ใช่ชื่อใหม่ของ On-Action** (GDD เคยระบุแบบนั้น — ตกยุคแล้ว) : engine แยกเป็นสอง trigger คนละตัวคือ `OnAction` และ `OnSpecial` ทั้งคู่อ่าน ability จาก action ชิ้นเดียวกันในลำดับ ต่างกันแค่จังหวะ และในหนึ่ง tick ทำงานได้อย่างใดอย่างหนึ่งเท่านั้น — ดูหัวข้อ *On-Action vs On-Hit vs Special*
+- **การเรียกชื่อ (สามคำที่ต้องไม่สลับกัน)** :
+    - **Action Gauge** = หลอดที่สะสมด้วย Charge ทุกครั้งที่ออก action — ชื่อนี้ตรงกับโค้ด (`actionGaugeCount`, `ActionBar`) และคอลัมน์ `Max AG` ในชีต
+    - **On-Special** = ชื่อ trigger ที่ทำงานตอน Action Gauge เต็ม (ตรงกับ enum `OnSpecial` และเข้าชุดกับ On-Hit / On-Damaged / On-Half) — ข้อความในเกมและชีตให้ใช้คำนี้เสมอเมื่อพูดถึง trigger
+    - **Special** = ตัวท่าที่ออกมา (ท่าพิเศษ/burst) ไม่ใช่ชื่อหลอด และไม่ใช่ชื่อ trigger
+- **On-Special ไม่ใช่ชื่อใหม่ของ On-Action** (GDD เคยระบุแบบนั้น — ตกยุคแล้ว) : engine แยกเป็นสอง trigger คนละตัวคือ `OnAction` และ `OnSpecial` ทั้งคู่อ่าน ability จาก action ชิ้นเดียวกันในลำดับ ต่างกันแค่จังหวะ และในหนึ่ง tick ทำงานได้อย่างใดอย่างหนึ่งเท่านั้น — ดูหัวข้อ *On-Action vs On-Hit vs On-Special*
 - Special พื้นฐานของผู้เล่นคือการโจมตี burst : ความเสียหาย = ผลรวม ATK ราย action ของทุกชิ้นใน loadout (แต่ละชิ้นคิด base ATK + ATK ของชิ้นนั้น) นับเป็นการโจมตี 1 ครั้ง — โดน Armor หักครั้งเดียว ติด Damage Floor 1 และกินหลอด DEF ก่อนตามปกติ — Primary Perk บางสายจะ Replaces Special (เช่น Duelist, Alchemist, Devourer) ตาม perk sheet
-- Feast ส่วนใหญ่มี Special ของตัวเอง โดยนำ ability สาย active/offensive เดิม (On-Start/On-Hit ที่เป็นการบัฟตัวเอง ตีแรงพิเศษ หรือ debuff ผู้เล่น) มาปรับให้ทำงานตอน Special แทน ส่วน ability สาย reactive (On-Damaged, On-Exposed, On-Half) คงเป็น trigger เดิม
+- Feast ส่วนใหญ่มี Special ของตัวเอง โดยนำ ability สาย active/offensive เดิม (On-Start/On-Hit ที่เป็นการบัฟตัวเอง ตีแรงพิเศษ หรือ debuff ผู้เล่น) มาปรับให้ทำงานตอน On-Special แทน ส่วน ability สาย reactive (On-Damaged, On-Exposed, On-Half) คงเป็น trigger เดิม
 
-### **On-Action vs On-Hit vs Special (สาม trigger ที่คนสับสนบ่อย)**
+### **On-Action vs On-Hit vs On-Special (สาม trigger ที่คนสับสนบ่อย)**
 
 ทั้งสามผูกกับ **action เดียวกัน** คือชิ้นที่ active อยู่ใน sequence ต่างกันที่ตำแหน่งในลำดับการทำงานของ tick นั้น:
 
@@ -264,25 +268,25 @@ encounter ภายในเกมนี้มีหลายรูปแบบ�
 Speed Gauge เต็ม → ชิ้นที่ active ออก action
   ├─ On-Action     ← ตัดสินว่า action นี้จะโจมตีหรือทำอย่างอื่น (ทำงานก่อนดาเมจ)
   │    └─ โจมตี → On-Hit ของผู้กระทำ + On-Damaged ของผู้ถูกกระทำ
-  └─ ถ้า tick นี้ Special Gauge เต็ม → Special แทน (On-Action ไม่ทำงาน)
+  └─ ถ้า tick นี้ Action Gauge เต็ม → On-Special แทน (On-Action ไม่ทำงาน)
 ```
 
 | Trigger | จังหวะ | บทบาท |
 | --- | --- | --- |
 | **On-Action** | tick ปกติ ก่อนการโจมตี | **แทนที่**การโจมตีได้ — ถ้า ability ที่ผูกไว้ไม่ใช่การทำดาเมจ action นั้นจะไม่โจมตี |
 | **On-Hit** | หลังการโจมตีเกิดขึ้นจริง | **พ่วงท้าย**การโจมตี ไม่มีผลว่าจะโจมตีหรือไม่ · ยิงซ้ำได้ตามจำนวนช่อง gauge ถ้ามี Perk สาย Full Force · การตีเสริมจาก Perk (Duelist, Combo Strike) ก็นับเป็น On-Hit |
-| **Special** | tick ที่ Special Gauge เต็ม | พ่วงท้ายการโจมตีเช่นกัน แต่เฉพาะ tick นั้น — tick ที่เป็น Special จะ**ไม่**ทำงาน On-Action |
+| **On-Special** | tick ที่ Action Gauge เต็ม | พ่วงท้ายการโจมตีเช่นกัน แต่เฉพาะ tick นั้น — tick ที่เป็น On-Special จะ**ไม่**ทำงาน On-Action |
 
-- **หนึ่ง tick เป็นได้อย่างเดียว** — เป็น Special แล้วจะไม่ใช่ On-Action ไม่ใช่ทำงานทั้งคู่ซ้อนกัน
+- **หนึ่ง tick เป็นได้อย่างเดียว** — เป็น On-Special แล้วจะไม่ใช่ On-Action ไม่ใช่ทำงานทั้งคู่ซ้อนกัน
 - ถ้า action นั้นถูกหลบ (dodge) ไม่มี trigger ตัวไหนทำงานเลย
-- **ข้อยกเว้นเดียว — Perk สาย Protector** : tick ที่ควรเป็น Special จะถูกกด หลอดค้างเต็มไว้ ไม่รีเซ็ต ไม่ออก Special และ tick นั้นไหลกลับไปเป็น action ปกติ (ตัวสวนกลับไปเกิดตอนผู้เล่นโดนตีแทน)
+- **ข้อยกเว้นเดียว — Perk สาย Protector** : tick ที่ควรเป็น On-Special จะถูกกด หลอดค้างเต็มไว้ ไม่รีเซ็ต ไม่ออก Special และ tick นั้นไหลกลับไปเป็น action ปกติ (ตัวสวนกลับไปเกิดตอนผู้เล่นโดนตีแทน)
 
 #### **สถานะการใช้งานจริงของ On-Action (ณ 2026-09-05)**
 
 ตาม*กติกากลาง*ในหัวข้อ Action Sequence ทุก action **โจมตีเสมอ** (base stat ไม่ต่ำกว่า 1) ดังนั้นความสามารถ "On-Action แทนที่การโจมตี" ที่ engine รองรับ **ไม่ถูกใช้ในดีไซน์นี้** และข้อมูลปัจจุบันก็สะท้อนแบบนั้น:
 
 - อาวุธที่มี ability สาย On-Action มี 35 ชิ้น **เป็นของ Feast ทั้งหมด ไม่มีของผู้เล่นเลย** และทุกชิ้นมี ability ทำดาเมจกำกับอยู่ด้วยเสมอ → ผลลัพธ์เท่ากับไม่ได้ใส่ On-Action
-- ผลข้างเคียง: ability สาย On-Action ที่ไม่ใช่การทำดาเมจ (Gain/Restore) **ไม่เคยทำงานเลย** เพราะถูกทางที่โจมตีบังไว้ — ค้างรอตัดสินว่าจะย้ายไป On-Hit (ตีแล้วได้ผล) หรือ Special (ตอนหลอดเต็ม)
+- ผลข้างเคียง: ability สาย On-Action ที่ไม่ใช่การทำดาเมจ (Gain/Restore) **ไม่เคยทำงานเลย** เพราะถูกทางที่โจมตีบังไว้ — ค้างรอตัดสินว่าจะย้ายไป On-Hit (ตีแล้วได้ผล) หรือ On-Special (ตอนหลอดเต็ม)
 - ⇒ **สรุป: On-Action มีอยู่ใน engine แต่ยังไม่มีผลกับเกม** ถ้ายืนกติกา "ตีเสมอ" ต่อไป ควรยุบข้อมูลสาย On-Action ทิ้งทั้งหมด และเก็บ trigger ไว้เฉย ๆ (ลบ enum ไม่ได้ เพราะ asset เก็บเป็น index)
 - sim ใน `simulate/` จำลองตามกติกา "ตีเสมอ" อยู่แล้ว จึงไม่จำลอง On-Action — ถ้าวันไหนตัดสินใจให้ On-Action แทนที่การโจมตีได้จริง ต้องแก้ทั้ง GDD และ sim engine ทั้งสองตัวพร้อมกัน
 
@@ -291,7 +295,7 @@ Speed Gauge เต็ม → ชิ้นที่ active ออก action
 - Value ของ Gauge นี้จะเพิ่มเรื่อยๆ ด้วยอัตรา = base SPD + SPD ของชิ้นที่ active (ชิ้นถัดไปที่จะออก action) — เปลี่ยนชิ้น active อัตราก็เปลี่ยนตาม
 - **อัตราเติมขั้นต่ำ 1 เสมอ** — ต่อให้ SPD ติดลบจาก stat หรือ debuff ก็ตาม เพื่อการันตีว่าทุก action มาถึงแน่นอน rotation ไม่มีทางค้าง (เกมเป็น watch-only ห้ามมี state ที่ไม่เดินหน้า)
 - เมื่อ Gauge นี้เต็ม ชิ้นที่ active จะออก action 1 ครั้ง แล้วลำดับเลื่อนไปชิ้นถัดไปใน sequence
-- เมื่อเต็มแล้ว หักค่าเต็มออกจาก value — **เศษความเร็วที่เกินทบไปรอบถัดไป** (ต่างจาก Special Gauge ที่ทิ้งส่วนเกิน) เพื่อให้ความต่างของ SPD ยังมีผลจริงแม้ค่าจะสูงจนเกือบออก action ได้ทุก tick
+- เมื่อเต็มแล้ว หักค่าเต็มออกจาก value — **เศษความเร็วที่เกินทบไปรอบถัดไป** (ต่างจาก Action Gauge ที่ทิ้งส่วนเกิน) เพื่อให้ความต่างของ SPD ยังมีผลจริงแม้ค่าจะสูงจนเกือบออก action ได้ทุก tick
 
 ### **Damage Calculate (การคำนวนความเสียหาย)**
 
@@ -359,7 +363,7 @@ Ability ทุกตัวในเกมเขียนภายใต้รู
 
 #### **องค์ประกอบของ Ability :**
 
-- **Trigger (จังหวะทำงาน)** : จังหวะที่ Ability ทำงาน — Passive, On-Start, Battlecry, On-Hit, On-Damaged, On-Half, On-Exposed, Death, On-Action, Special
+- **Trigger (จังหวะทำงาน)** : จังหวะที่ Ability ทำงาน — Passive, On-Start, Battlecry, On-Hit, On-Damaged, On-Half, On-Exposed, Death, On-Action, On-Special
 - **Verb (กริยา)** : การกระทำของผล เป็นชุดปิด 5 คำ — Gain, Lose, Convert, Restore, Eater
 - **Magnitude (ขนาดของผล)** : *(ชื่อเดิม: Intensity)* ตัวเลขบอกขนาด ตีความตามเป้า — ถ้าเป้าเป็น Stat หรือ Combat Keyword ตัวเลขคือจำนวน/stack, ถ้าเป้าเป็น Grid Keyword ตัวเลขคือ **Range** (จำนวนช่องรอบตัวเจ้าของ Ability)
 - **Target (เป้าของผล)** : สิ่งที่ถูกกระทำ — เป็นได้ทั้งค่าพลังพื้นฐาน (HP, ATK, DEF, SPD) และ Keyword (Thorn, Armor, Fury, Taunt, Freezer)
@@ -383,8 +387,8 @@ Ability ทุกตัวในเกมเขียนภายใต้รู
     - **On-Half :** ทำงานเมื่อเจ้าของ Ability พลังชีวิตต่ำกว่าครึ่งหนึ่งเป็นครั้งแรกในการต่อสู้
     - **On-Exposed** : ทำงานเมื่อค่า DEF ของเจ้าของ Ability เปลี่ยนจากมากกว่า 0 เป็น 0 ครั้งแรกในการต่อสู้ — คือจังหวะที่หลอด DEF ถูกกินจนหมดและความเสียหายเริ่มทะลุเข้า HP (หากเข้า combat ด้วย DEF 0 อยู่แล้ว จะไม่ trigger ตลอดการต่อสู้นั้น)
     - **On-Full** : ทำงานเมื่อเจ้าของ Ability มีค่า HP เท่ากับ max HP
-    - **On-Action** : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ปกติ (Special Gauge ยังไม่เต็ม) — ทำงาน**ก่อน**การโจมตี ไม่ใช่หลัง ดูหัวข้อ *On-Action vs On-Hit vs Special*
-    - **Special** *(engine เรียก `OnSpecial`)* : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ที่ Special Gauge เต็ม — **เป็นคนละ trigger กับ On-Action ไม่ใช่ชื่อใหม่ของ On-Action**
+    - **On-Action** : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ปกติ (Action Gauge ยังไม่เต็ม) — ทำงาน**ก่อน**การโจมตี ไม่ใช่หลัง ดูหัวข้อ *On-Action vs On-Hit vs On-Special*
+    - **On-Special** *(engine เรียก `OnSpecial`)* : ทำงานเมื่อ action ของเจ้าของ Ability ถูกใช้งานใน tick ที่ Action Gauge เต็ม — ตัวท่าที่ออกเรียกว่า **Special** — **เป็นคนละ trigger กับ On-Action ไม่ใช่ชื่อใหม่ของ On-Action**
 
 #### **Verb (กริยา) :**
 
@@ -661,7 +665,7 @@ Curse เป็นผลเสียที่จะส่งผลต่อผ�
 
 # **Character :**
 
-> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Special Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Special Gauge 2** (base ATK/SPD/Charge ถูก**บวก**เข้ากับค่าของชิ้นที่ออก action ทุกครั้ง — การอัปเกรด base stat จึงส่งผลกับทุก action ของทุก loadout) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
+> ตัวละครแต่ละตัวมีค่าพลังพื้นฐาน (Character base stat) ได้แก่ Max HP, base ATK, base DEF/SPD, base Charge และจำนวนช่อง Max Action Gauge ซึ่งเป็นค่าคงที่ตลอด run — ไม่มีการเติบโตตามเลเวลอีกต่อไป โดยค่าตั้งต้นของตัวละครเริ่มต้นคือ **HP 10 / ATK 1 / DEF 0 / SPD 1 / Charge 1 / Max Action Gauge 2** (base ATK/SPD/Charge ถูก**บวก**เข้ากับค่าของชิ้นที่ออก action ทุกครั้ง — การอัปเกรด base stat จึงส่งผลกับทุก action ของทุก loadout) ตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) รวมถึงมีความสามารถเฉพาะตัวที่เรียกว่าสกิล วิธีใช้งานจะคล้ายกับการกดธงในเกม mine sweeper แต่จะเรียบง่ายและส่งผลทันที เรียกว่าสกิลธง โดยมีรายละเอียดตามใน [Character data](https://docs.google.com/spreadsheets/d/1sss3-5o_RKYdAQY2NT6FHwRViqSy6LY3Ff0Gw1HhIgk/edit?gid=2108891595#gid=2108891595) เช่นกัน
 > 
 
 # **Floor Variant :**

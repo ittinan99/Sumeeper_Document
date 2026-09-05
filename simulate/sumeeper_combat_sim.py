@@ -8,14 +8,14 @@ Rotation is per-action: one Speed Gauge fill = one action by the active
 sequence entry, then the rotation advances. Fill rate = SPD of the active
 entry. Per-action ATK/SPD/Charge = owner base + piece stat (ADDITIVE, no
 substitution); DEF is the only stat summed across the whole loadout.
-Player base (starter character, per design): HP10 ATK1 DEF0 SPD1 Charge1 MaxSG2.
+Player base (starter character, per design): HP10 ATK1 DEF0 SPD1 Charge1 MaxAG2.
 On-Exposed fires only when DEF transitions >0 -> 0 (never if it starts at 0).
-Special Gauge overflow is discarded on reset.
+Action Gauge overflow is discarded on reset.
 Assumptions (declared): speed gauge max 10; player wins ties;
 feast per-action SPD = Monsters Config base SPD + Feast Sequence entry SPD
 (same additive rule as the player side); feast per-action ATK/Charge are the
 sequence entry values as-is (Config ATK is legacy, not added); feast DEF pool
-= Config DEF + sum of entry DEF; feast HP/MaxSG come from the Feast tab's
+= Config DEF + sum of entry DEF; feast HP/MaxAG come from the Feast tab's
 hand-set value cells; ability Gain SPD adds to the owner's fill rate for all
 actions;
 player Special = burst hit with sum of per-action loadout ATK, one attack
@@ -30,7 +30,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")  # monster names are non-ASCII; Windows consoles default to cp874/cp1252
 
 GAUGE_MAX = 10
-PLAYER = dict(hp=10, atk=1, dfs=0, spd=1, chg=1, maxsg=2)
+PLAYER = dict(hp=10, atk=1, dfs=0, spd=1, chg=1, maxag=2)
 TICK_LIMIT = 400
 
 def _load(path):
@@ -64,7 +64,7 @@ for r in range(2, abs_.max_row + 1):
 
 # ---------- load monsters ----------
 # Bases come from "Monsters Config" (values), per-action stats from "Feast Sequence";
-# only HP and Max SG are read from the "Feast" rollup tab (hand-set value cells, row-aligned
+# only HP and Max AG are read from the "Feast" rollup tab (hand-set value cells, row-aligned
 # with Config). The Feast DEF/SPD formula cells (base + SUM of all entries) are the OLD
 # entity-sum model and are deliberately NOT used: per-action SPD = base SPD + entry SPD,
 # per-action ATK/Charge = entry value as-is (Config ATK is legacy and unused).
@@ -76,7 +76,7 @@ for r in range(2, mc.max_row + 1):
     if not k:
         continue
     monsters[k] = dict(key=k, name=mc.cell(r, 4).value, tier=int(mc.cell(r, 2).value),
-                       hp=ft.cell(r, 5).value, maxsg=ft.cell(r, 8).value,
+                       hp=ft.cell(r, 5).value, maxag=ft.cell(r, 8).value,
                        dfs=mc.cell(r, 7).value or 0, base_spd=mc.cell(r, 8).value or 0,
                        seq=[], abil=[])
 for r in range(3, sq.max_row + 1):
@@ -92,8 +92,8 @@ for r in range(3, sq.max_row + 1):
     monsters[k]["seq"].append(entry)
 for m in monsters.values():
     m["dfs"] += sum(e["dfs"] for e in m["seq"])  # DEF pool = base + per-entry contributions
-    if m["hp"] is None or m["maxsg"] is None:
-        sys.exit(f"[ERROR] ค่า HP/Max SG ของ {m['name']} ในแท็บ Feast ว่างอยู่ (แถว {m['key']})\n"
+    if m["hp"] is None or m["maxag"] is None:
+        sys.exit(f"[ERROR] ค่า HP/Max AG ของ {m['name']} ในแท็บ Feast ว่างอยู่ (แถว {m['key']})\n"
                  f"  มักเกิดเพราะเซลล์เป็นสูตรที่ยังไม่ถูกคำนวณ — เปิดไฟล์ Monster Sheet ใน Excel กด Save หนึ่งครั้งแล้วรันใหม่\n"
                  f"  หรือพิมพ์ค่าเป็นตัวเลขตรงๆ ลงเซลล์นั้นแทนสูตร")
     if not m["seq"]:
@@ -108,13 +108,13 @@ for r in range(2, ca.max_row + 1):
 
 # ---------- entity ----------
 class Ent:
-    def __init__(s, name, hp, dfs, maxsg):
+    def __init__(s, name, hp, dfs, maxag):
         s.name, s.hp, s.maxhp = name, hp, hp
-        s.dfs, s.maxsg = dfs, maxsg
+        s.dfs, s.maxag = dfs, maxag
         s.spd = 0  # SPD bonus from abilities; fill rate = active entry spd + this
         s.atk_bonus = 0
         s.thorn = s.armor = 0
-        s.sgauge = s.specgauge = 0.0
+        s.sgauge = s.agauge = 0.0
         s.seq_idx = 0
         s.fired = set()
         s.log = []
@@ -187,9 +187,9 @@ def step(ent, foe, sim, t):
     ent.seq_idx = (ent.seq_idx + 1) % len(ent.sequence)
     ent.cur_abil = ent.abilities + entry.get("abil", [])
     hit(ent, foe, entry["atk"] + ent.atk_bonus, sim, t)
-    ent.specgauge += entry["chg"]
-    if ent.specgauge >= ent.maxsg and foe.hp > 0 and ent.hp > 0:
-        ent.specgauge = 0
+    ent.agauge += entry["chg"]
+    if ent.agauge >= ent.maxag and foe.hp > 0 and ent.hp > 0:
+        ent.agauge = 0
         do_special(ent, foe, sim, t)
     ent.cur_abil = ent.abilities
 
@@ -208,7 +208,7 @@ def fight(loadout_names, mkey):
     sim = Sim()
     m = monsters[mkey]
     pw = [weapons[n] for n in loadout_names]
-    p = Ent("player", PLAYER["hp"], PLAYER["dfs"] + sum(w["dfs"] for w in pw), PLAYER["maxsg"])
+    p = Ent("player", PLAYER["hp"], PLAYER["dfs"] + sum(w["dfs"] for w in pw), PLAYER["maxag"])
     # per-action values = base + piece stat (additive, per GDD); empty loadout -> pure base attack
     if pw:
         p.sequence = [dict(atk=PLAYER["atk"] + w["atk"], spd=PLAYER["spd"] + w["spd"],
@@ -218,7 +218,7 @@ def fight(loadout_names, mkey):
         p.sequence = [dict(atk=PLAYER["atk"], spd=PLAYER["spd"], chg=PLAYER["chg"], abil=[])]
     p.abilities = [a for w in pw for a in w["abil"] if a["lane"] != "Action"]
     p.burst_atk = sum(e["atk"] for e in p.sequence)
-    e = Ent(m["name"], m["hp"], m["dfs"], m["maxsg"])
+    e = Ent(m["name"], m["hp"], m["dfs"], m["maxag"])
     e.sequence = [dict(x, spd=m["base_spd"] + x["spd"]) for x in m["seq"]]  # per-action SPD = base + entry (same rule as player)
     e.abilities = m["abil"]
     e.burst_atk = 0
