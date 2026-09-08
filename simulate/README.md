@@ -73,7 +73,8 @@
 
 - Trigger: **On-Start** (เริ่ม combat) / **On-Hit** (ผู้ตี ทุก action) / **On-Damaged** (ผู้ถูกตี ทุกครั้งที่โดน) / **On-Half** (ครั้งเดียว เมื่อ HP ตกถึงครึ่ง) / **On-Exposed** (ครั้งเดียว เฉพาะเมื่อ DEF เปลี่ยนจาก >0 เป็น 0 — เริ่ม combat ที่ 0 อยู่แล้วไม่ยิงตลอดไฟต์) / **On-Special** (tick ที่ Action Gauge เต็ม — ตัวท่าเรียกว่า Special) / Death / Passive
 - **ไม่จำลอง On-Action** — engine ของเกมมี trigger นี้แยกจาก On-Special (ยิงตอน tick ปกติ ก่อนดาเมจ และแทนที่การโจมตีได้) แต่ดีไซน์ยืนกติกา "ทุก action โจมตีเสมอ" และไม่มีข้อมูลชิ้นไหนใช้ทางแทนที่จริง sim จึงตีทุก tick ตรงตามกติกา — ดูหัวข้อ *On-Action vs On-Hit vs On-Special* ใน GDD ถ้าวันไหนกติกาเปลี่ยน ต้องแก้ engine ทั้งสองตัวพร้อม GDD
-- "Shield" เป็นคำเก่า = **Armor**; **Fury** นิยามไว้ใน GDD แต่ยังไม่มีของชิ้นไหนใช้และ sim ยังไม่รองรับ
+- ⚠️ **`Shield` เป็นคำกำกวม ห้ามใช้** — ในชีตออกแบบเป็นคำเก่าของ **Armor** (sim จึง map target `Shield` → armor ไว้ ถึงจะไม่มีข้อมูลชิ้นไหนใช้แล้ว) แต่ในโค้ด Unity `CurrentShield` / `ignoreShield` / enum `IgnoreShield` หมายถึงหลอด **DEF** — เขียน `DEF` หรือ `Armor` ตรง ๆ เสมอ
+- **Fury** นิยามไว้ใน GDD แต่ยังไม่มีของชิ้นไหนใช้และ sim ยังไม่รองรับ
 - Action Gauge มี MaxAG ช่อง (คงที่ต่อตัวละคร ขยับด้วย Perk ไม่ผันตาม loadout) — เต็มแล้วใช้ Special ทันที รีเซ็ตเป็น 0 ทิ้ง Charge ส่วนเกิน
 - Special พื้นฐานของผู้เล่น = **burst โจมตี 1 ครั้ง** ค่า = Σ ATK ราย action ของทุกชิ้นใน loadout — โดน Armor หักครั้งเดียว ติด floor 1 กินหลอด DEF ตามปกติ; Primary Perk บางสาย Replaces Special; Feast ส่วนใหญ่มี Special ของตัวเอง
 
