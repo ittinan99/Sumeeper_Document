@@ -27,6 +27,7 @@ Key systems to know before touching anything:
 | --- | --- |
 | All game rules & systems (canonical) | `game_document/Sumeeper_GDD.md` — sections: Core Mechanics (Grid, Stat) · Encounter (Combat/Shop/Forge/Perk/Item/Hint) · Combat + Auto battle + Damage Calculate · Feature (Feast, Feast Sequence, Ability, Trigger/Keyword) · Curse Gauge · Cook · Equipment (Tier, Set) · Perk · Curse · Core gameloop (Run, Currency, Quest, Reward, Curse Contract) · Character · Floor Variant |
 | UI/UX per screen — สิ่งที่ต้องแสดง + สิ่งที่กดได้ (ไม่ใช่ rule) | `game_document/Sumeeper_UX_Screens.md` — ตอนนี้ครอบคลุมกลุ่มหน้า Result; ถ้าขัดกับ GDD ให้ยึด GDD |
+| User flow ทั้งเกม (screen-to-screen, 6 หน้า: Overview / Meta & Run Setup / Grid / Combat / Encounters / Floor & Run Result) — label อังกฤษ สำหรับทีม UX/dev | `game_document/Sumeeper_User_Flow.drawio` — เปิดด้วย draw.io / diagrams.net; โน้ตสีเหลืองในไดอะแกรม = จุดที่ GDD ยังไม่ระบุหรือขัดกับ UX doc |
 | Weapon stats, abilities, tuning weights, CP budget, rarity pools, forge scaling | `game_document/Sumeeper_Equipment_Sheet.xlsx` |
 | Feast (monster) stats & action sequences & abilities | `game_document/Sumeeper_Monster_Sheet.xlsx` |
 | Curses | `game_document/Sumeeper_Curse_Sheet.xlsx` |
